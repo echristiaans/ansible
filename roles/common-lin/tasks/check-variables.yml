@@ -1,0 +1,16 @@
+- name: Fail if unsupported distribution
+  fail:
+    msg: "{{ ansible_distribution }} is not a supported OS distribution for this role"
+  when: "ansible_distribution not in ['CentOS', 'Ubuntu']"
+
+- name: Fail if unsupported CentOS release
+  fail:
+    msg: "{{ ansible_distribution }} {{ ansible_distribution_major_version }} is not a supported OS family for this role"
+  when: "ansible_distribution == 'CentOS' and ansible_distribution_major_version not in ['6','7']"
+
+- name: Fail if unsupported Ubuntu release
+  fail:
+    msg: "{{ ansible_distribution }} {{ ansible_distribution_major_version }} is not a supported OS family for this role"
+  when: "ansible_distribution == 'Ubuntu' and ansible_distribution_major_version not in ['14']"
+
+

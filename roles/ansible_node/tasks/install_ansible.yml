@@ -1,0 +1,25 @@
+---
+# tasks file for install_ansible
+- name: Install pip
+  yum:
+    pkg={{ item }}
+    state=present
+  with_items:
+    - gcc
+    - python-devel
+    - python-pip
+    - krb5-devel
+    - sshpass
+  become: yes
+
+- name: Install ansible 1.9.3
+  pip: name=ansible version=1.9.3
+  become: yes
+
+- name: Install pywinrm
+  pip: name=pywinrm state=latest
+  become: yes
+
+- name: Install kerberos
+  pip: name=kerberos state=latest
+  become: yes

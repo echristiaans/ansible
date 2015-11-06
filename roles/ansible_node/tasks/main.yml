@@ -1,0 +1,4 @@
+---
+- include: kinit.yml
+- include: install_ansible.yml
+- include: install_sadis.yml

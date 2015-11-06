@@ -1,0 +1,7 @@
+---
+
+- name: Install git
+  yum:
+    pkg=git
+    state=present
+  become: yes

@@ -1,0 +1,12 @@
+---
+- name: open-vm-tools | install vmware tools package
+  yum: state=present pkg=open-vm-tools
+  become: yes
+
+- name: open-vm-tools | be sure open-vm-tools is running and enabled
+  service: name=vmtoolsd enabled=yes state=started
+  become: yes
+
+- name: open-vm-tools | be sure timesync is enabled
+  raw: vmware-toolbox-cmd timesync enable
+  become: yes

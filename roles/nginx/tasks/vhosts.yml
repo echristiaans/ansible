@@ -1,0 +1,75 @@
+---
+- name: Remove default nginx vhost config file (if configured).
+  file:
+    path: "{{ nginx_default_vhost_path }}"
+    state: absent
+  when: nginx_remove_default_vhost
+  notify: restart nginx
+  become: yes
+
+- name: Add managed vhost config file (if any vhosts are configured).
+  template:
+    src: vhosts.j2
+    dest: "{{ nginx_vhost_path }}/vhosts.conf"
+    mode: 0644
+  when: nginx_vhosts
+  notify: restart nginx
+  become: yes
+
+- name: Remove managed vhost config file (if no vhosts are configured).
+  file:
+    path: "{{ nginx_vhost_path }}/vhosts.conf"
+    state: absent
+  when: not nginx_vhosts
+  notify: restart nginx
+  become: yes
+#FocusCura.nl
+- name: copy temp self signed certs acceptatie.account.focuscura.nl.crt
+  copy: src=dummycert.crt dest=/etc/pki/tls/certs/acceptatie.account.focuscura.nl.crt
+  become: yes
+
+- name: copy temp self signed certs acceptatie.account.focuscura.nl.key
+  copy: src=dummycert.key dest=/etc/pki/tls/private/acceptatie.account.focuscura.nl.key
+  become: yes
+#BeeldBelApp.nl
+- name: copy temp self signed certs acceptatie.account.focuscura.nl.crt
+  copy: src=dummycert.crt dest=/etc/pki/tls/certs/selfservice.acceptatie.beeldbelapp.nl.crt
+  become: yes
+
+- name: copy temp self signed certs acceptatie.account.focuscura.nl.key
+  copy: src=dummycert.key dest=/etc/pki/tls/private/selfservice.acceptatie.beeldbelapp.nl.key
+  become: yes
+
+- name: copy temp self signed certs www.acceptatie.beeldbelapp.nl.crt
+  copy: src=dummycert.crt dest=/etc/pki/tls/certs/www.acceptatie.beeldbelapp.nl.crt
+  become: yes
+
+- name: copy temp self signed certs www.acceptatie.beeldbelapp.nl.key
+  copy: src=dummycert.key dest=/etc/pki/tls/private/www.acceptatie.beeldbelapp.nl.key
+  become: yes
+
+#WegWijsApp.nl
+- name: copy wildcard cert star.pal4.nl
+  copy: src=star_pal4_nl.crt dest=/etc/pki/tls/certs/star_pal4_nl.crt
+  become: yes
+
+- name: copy wildcard key star.pal4.nl
+  copy: src=star_pal4_nl.key dest=/etc/pki/tls/private/star_pal4_nl.key
+  become: yes
+
+- name: copy wildcard bundle cert star.pal4.nl
+  copy: src=star_pal4_bundle.crt dest=/etc/pki/tls/private/star_pal4_bundle.crt
+  become: yes
+
+# ThuisMeetAppCerts
+- name: copy wildcard bundle cert star.thuismeetapp.nl
+  copy: src=star_thuismeetapp_bundle.crt dest=/etc/pki/tls/certs/star_thuismeetapp_bundle.crt
+  become: yes
+
+- name: copy wildcard cert star.thuismeetapp.nl
+  copy: src=star_thuismeetapp_nl.crt dest=/etc/pki/tls/certs/star_thuismeetapp_nl.crt
+  become: yes
+
+- name: copy wildcard key star.thuismeetapp.nl
+  copy: src=star_thuismeetapp_nl.key dest=/etc/pki/tls/private/star_thuismeetapp_nl.key
+  become: yes

@@ -1,0 +1,12 @@
+---
+- name: Install net-snmp
+  yum: name=net-snmp state=latest
+
+- name: Push snmp config file disabling SNMP v1 and v2c
+  copy: src=snmpd.conf dest=/etc/snmp/snmpd.conf owner=root group=root mode=0600 backup=no
+ 
+- name: start snmp
+  service: name=snmpd state=started enabled=yes
+  become: yes
+
+
