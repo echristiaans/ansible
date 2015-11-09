@@ -73,3 +73,16 @@
 - name: copy wildcard key star.thuismeetapp.nl
   copy: src=star_thuismeetapp_nl.key dest=/etc/pki/tls/private/star_thuismeetapp_nl.key
   become: yes
+
+# FocusCura.com
+- name: copy wildcard bundle cert star.thuismeetapp.nl
+  copy: src=www_focuscura_com.crt dest=/etc/pki/tls/certs/www_focuscura_com.crt
+  become: yes
+
+- name: copy wildcard cert star.thuismeetapp.nl
+  copy: src=www_focuscura_bundle.crt dest=/etc/pki/tls/certs/www_focuscura_bundle.crt
+  become: yes
+
+- name: copy wildcard key star.thuismeetapp.nl
+  copy: src=www_focuscura_com.key dest=/etc/pki/tls/private/www_focuscura_com.key
+  become: yes
