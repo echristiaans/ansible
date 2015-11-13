@@ -26,4 +26,4 @@
   lineinfile: dest=/etc/sudoers state=present regexp='^%charlie_admin ALL\=' line='%charlie_admin ALL=(ALL) NOPASSWD:/bin/su' validate='visudo -cf %s'
 
 - name: edit sudoers for ansible user
-  lineinfile: dest=/etc/sudoers state=present regexp='^ansible ALL\=' line='ansible ALL=(ALL) NOPASSWD:/bin/su' validate='visudo -cf %s'
+  lineinfile: dest=/etc/sudoers state=present regexp='^ansible ALL\=' line='ansible ALL=(ALL) NOPASSWD: ALL' validate='visudo -cf %s'
