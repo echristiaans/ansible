@@ -1,12 +1,12 @@
 ---
 - include: check-variables.yml
 
+- include: resolv.yml
 - include: yum_repo.yml
 - include: ntp-CentOS.yml
   when: "ansible_distribution == 'CentOS'"
 - include: motd-CentOS.yml
   when: "ansible_distribution == 'CentOS'"
-- include: resolv.yml
 - include: snmpd.yml
 - include: sshd.yml
 - include: users.yml
