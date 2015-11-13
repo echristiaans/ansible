@@ -6,6 +6,8 @@
     owner: root
     group: root
     mode: 0644
+  become: yes
 
 - name: Ensure nginx is installed.
   yum: pkg=nginx state=installed enablerepo=nginx
+  become: yes
