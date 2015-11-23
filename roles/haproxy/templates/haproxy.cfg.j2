@@ -60,7 +60,7 @@ defaults
 #---------------------------------------------------------------------
 # main frontend which proxys to the backends
 #---------------------------------------------------------------------
-frontend  main *:80
+frontend  main {{ haproxy.bind }} 
     {% for backend in haproxy.backends %}
         {% for acl in backend.acls %}
         acl is_{{backend.title}} {{acl}}
