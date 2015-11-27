@@ -1,6 +1,0 @@
-- name: resolv | manage /etc/resolv.conf
-  template:
-    src: resolv.conf.j2
-    dest: /etc/resolv.conf
-    mode: 0644
-  become: yes

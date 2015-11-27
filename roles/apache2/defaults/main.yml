@@ -1,9 +1,0 @@
----
-# defaults file for apache2
-apache_vhosts_disabled:
-  - servername: "welcome"
-    serveradmin: "admin@example.com"
-    documentrootdir: "vhost3.example.com"
-    errorlog: "vhost3.example.com"
-    customlog: "vhost3.example.com"
-
