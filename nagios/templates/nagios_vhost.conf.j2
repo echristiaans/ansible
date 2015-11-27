@@ -1,0 +1,48 @@
+# Ansible managed
+ScriptAlias /nagios/cgi-bin/ "/usr/lib64/nagios/cgi-bin/"
+
+<Directory "/usr/lib64/nagios/cgi-bin/">
+   SSLRequireSSL
+   Options ExecCGI
+   AllowOverride None
+   Order allow,deny
+   Allow from all
+
+   AuthLDAPBindDN "{{ item.authldapbinddn }}"
+   AuthLDAPBindPassword "{{ item.authldapbindpassword }}"
+   AuthLDAPURL "{{ item.authldapurl }}" NONE
+
+   AuthType Basic
+   AuthName "Nagios Access"
+   AuthBasicProvider ldap file
+
+   AuthUserFile /etc/nagios/passwd
+
+   require valid-user
+   require ldap-group {{ item.require_ldapgroup }}
+
+</Directory>
+
+Alias /nagios "/usr/share/nagios/html"
+
+<Directory "/usr/share/nagios/html">
+   SSLRequireSSL
+   Options None
+   AllowOverride None
+   Order allow,deny
+   Allow from all
+
+   AuthLDAPBindDN "{{ item.authldapbinddn }}"
+   AuthLDAPBindPassword "{{ item.authldapbindpassword }}"
+   AuthLDAPURL "{{ item.authldapurl }}" NONE
+
+   AuthType Basic
+   AuthName "Nagios Access"
+   AuthBasicProvider ldap file
+
+   AuthUserFile /etc/nagios/passwd
+
+   require valid-user
+   require ldap-group {{ item.require_ldapgroup }}
+</Directory>
+

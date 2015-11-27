@@ -1,0 +1,136 @@
+---
+# tasks file for install_sadis
+- name: Install dependency
+  yum:
+    pkg={{ item }}
+    state=present
+  with_items:
+    - openssl-devel
+    - ruby
+    - ruby-devel
+    - gcc-c++
+    - git
+    - rubygems.noarch
+  become: yes
+  when: ansible_distribution_major_version == '7'
+
+- name: Sadis | copy ruby 2.0 file to tmp if os distribution = 6
+  copy: src=ruby-2.0.0p353-2.el6.x86_64.rpm dest=/tmp/ruby-2.0.0p353-2.el6.x86_64.rpm owner=root group=root mode=0644
+  become: yes
+  when: ansible_distribution_major_version == '6'
+
+- name: Sadis | Install Ruby 2.0 if os distribution = 6
+  yum: name=/tmp/ruby-2.0.0p353-2.el6.x86_64.rpm state=present
+  become: yes
+  when: ansible_distribution_major_version == '6'
+
+- name: Sadis | Install dependency if os distribution = 6
+  yum:
+    pkg={{ item }}
+    state=present
+  with_items:
+    - openssl-devel
+    - gcc-c++
+    - git
+    #- rubygems.noarch
+  become: yes
+  when: ansible_distribution_major_version == '6'
+
+
+- name: create sadis log directory
+  action: file path=/var/log/sadis/ state=directory owner=ansible mode=0755
+  become: yes
+
+- name: create sadis directory
+  action: file path=/etc/sadis/ state=directory owner=ansible mode=0755
+  become: yes
+
+- name: check if sadis is installed
+  shell: gem list ^sadis$ | awk {'print $2'} | cut -d'(' -f2 | cut -d')' -f1 | grep [0-9]
+  register: sadis_installed_version
+  ignore_errors: yes
+
+- name: check if addressable 2.2.7 is installed
+  shell: gem list ^addressable$ | awk {'print $2'} | cut -d'(' -f2 | cut -d')' -f1 | grep [0-9]
+  register: addressable_installed_version
+  ignore_errors: yes
+
+- name: uninstall addressable if version is 2.2.7
+  gem: name=addressable state=absent
+  become: yes
+  when: addressable_installed_version.stdout == '2.2.7'
+  ignore_errors: yes
+
+- name: Install addressable gem 2.3.4
+  gem: name=addressable state=present user_install=no version=2.3.4
+  become: yes
+  when: ansible_distribution_major_version == '6'
+
+- name: Install json gem
+  gem: name=json state=present user_install=no
+  become: yes
+  when: ansible_distribution_major_version == '6'
+
+- name: Copy sadis gem
+  copy: src=sadis-{{ sadis.version }}.gem dest=/tmp/sadis-{{ sadis.version }}.gem owner=root group=root mode=0644
+  become: yes
+
+- name: uninstall sadis if new version
+  gem: name=sadis state=absent
+  become: yes
+  when: sadis_installed_version.stdout != '{{ sadis.version }}'
+  ignore_errors: yes
+
+- name: Install sadis gem
+  gem: name=sadis gem_source=/tmp/sadis-{{ sadis.version }}.gem state=present user_install=no 
+  become: yes
+  when: sadis_installed_version.stdout != '{{ sadis.version }}'
+  notify:
+  - restart sadisd
+
+- name: systemd sadis startup script
+  become: yes
+  copy:
+    src: systemd/sadisd.service
+    dest: /lib/systemd/system/
+    mode: 0644
+  notify:
+  - reload systemd
+  when: ansible_distribution_major_version > '6'
+  become: yes
+
+- name: enable sadis on startup
+  file:
+    src: /usr/lib/systemd/system/sadisd.service
+    dest: /etc/systemd/system/multi-user.target.wants/sadisd.service
+    state: link
+    force: yes
+  when: ansible_distribution_major_version > '6'
+  become: yes
+
+- name: Add sadisd init.d daemon script
+  copy:
+    src: sadisd
+    dest: /etc/init.d/sadisd
+    mode: 0755
+  when: ansible_distribution_major_version == '6'
+  become: yes
+
+- name: Ensure sadisd is started
+  action: service name=sadisd state=started
+  when: ansible_distribution_major_version == '6'
+  become: yes
+
+- name: create config file
+  template:
+    src=config.yml.j2
+    dest=/etc/sadis/config.yml
+    owner=ansible
+    mode=0600
+  notify:
+    - restart sadisd
+  become: yes
+
+- name: be sure sadis is running and enabled
+  service: name=sadisd enabled=yes state=started
+  become: yes

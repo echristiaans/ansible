@@ -1,0 +1,3 @@
+---
+# defaults file for nagios
+nagiosadmin_passwd: ch4ng3m3

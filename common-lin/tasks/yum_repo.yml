@@ -1,0 +1,4 @@
+---
+- name: epel | install epel package
+  yum: state=present pkg=epel-release
+  become: yes

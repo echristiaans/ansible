@@ -1,0 +1,9 @@
+---
+- name: Internet Explorer | make script dir
+  win_file: path=C:\scripts state=directory
+
+- name: Internet Explorer | copy reg file
+  win_copy: src=EnableIEDownload.reg dest=c:\scripts\EnableIEDownload.reg
+
+- name: Internet Explorer | Enable IE Downloads
+  raw: regedit /s "C:\Scripts\EnableIEDownload.reg"

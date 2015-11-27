@@ -1,0 +1,56 @@
+#
+# The MySQL database server configuration file.
+#
+[client]
+port        = {{ mysql_port }}
+socket      = /var/run/mysqld/mysqld.sock
+
+# This was formally known as [safe_mysqld]. Both versions are currently parsed.
+[mysqld_safe]
+socket      = /var/run/mysqld/mysqld.sock
+nice        = 0
+
+[mysqld]
+user        = mysql
+pid-file    = /var/run/mysqld/mysqld.pid
+socket      = /var/run/mysqld/mysqld.sock
+port        = {{ mysql_port }}
+basedir     = /usr
+datadir     = /var/lib/mysql
+tmpdir      = /tmp
+lc-messages-dir = /usr/share/mysql
+skip-external-locking
+
+bind-address        = {{ mysql_bind_address }}
+
+key_buffer      = {{ mysql_key_buffer }}
+max_allowed_packet  = {{ mysql_max_allowed_packet }}
+thread_stack        = {{ mysql_thread_stack }}
+thread_cache_size   = {{ mysql_thread_cache_size }}
+
+query_cache_limit   = {{ mysql_query_cache_limit }}
+query_cache_size    = {{ mysql_query_cache_size }}
+log_error           = /var/log/mysql/error.log
+server-id           = {{ mysql_db_id }}
+
+{% if mysql_repl_role == 'master' %}
+log_bin                 = mysql-bin
+expire_logs_days        = 10
+max_binlog_size         = 100M
+
+{% if mysql_db is iterable and mysql_db is not string %}
+{% for i in mysql_db %}
+{% if i.replicate|default(1) %}
+binlog_do_db            = {{ i.name }}
+{% endif %}
+{% endfor %}
+
+{% for i in mysql_db %}
+{% if not i.replicate|default(1) %}
+binlog_ignore_db        = {{ i.name }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+!includedir /etc/mysql/conf.d/

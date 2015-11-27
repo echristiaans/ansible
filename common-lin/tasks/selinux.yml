@@ -1,0 +1,4 @@
+---
+- name: selinux | enable selinux
+  selinux: policy=targeted state=enforcing
+  become: yes

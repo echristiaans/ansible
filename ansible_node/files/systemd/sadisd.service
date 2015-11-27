@@ -1,0 +1,10 @@
+[Unit]
+Description=Sadisd
+
+[Service]
+ExecStart=/usr/local/bin/sadisd config.yml
+WorkingDirectory=/etc/sadis
+User=ansible
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,63 @@
+---
+- name: downtime_sched | check if schedule.cfg exists
+  stat: path=/etc/nagios/schedule.cfg
+  register: nagios_schedule_cfg
+
+- name: downtime_sched | create file schedule.cfg
+  file: path=/etc/nagios/schedule.cfg state=touch owner=root group=apache mode=0664
+  when: nagios_schedule_cfg.stat.exists == False
+
+- name: downtime_sched | check if downtime_job.pl exists
+  stat: path=/usr/lib64/nagios/downtime_job.pl
+  register: nagios_downtime_job
+
+- name: downtime_sched | copy file downtime_job.pl
+  copy: src=downtime_job.pl dest=/usr/lib64/nagios/downtime_job.pl owner=root group=root mode=0755
+  when: nagios_downtime_job.stat.exists == False
+
+- name: downtime_sched | check if downtime_sched.cgi exists
+  stat: path=/usr/lib64/nagios/cgi-bin/downtime_sched.cgi
+  register: nagios_downtime_sched
+
+- name: downtime_sched | copy file downtime_sched.cgi
+  copy: src=downtime_sched.cgi dest=/usr/lib64/nagios/cgi-bin/downtime_sched.cgi owner=root group=root mode=0755
+  when: nagios_downtime_sched.stat.exists == False
+
+- name: downtime_sched | modify file downtime_job.pl (schedule.cfg)
+  replace: dest=/usr/lib64/nagios/downtime_job.pl regexp='\$NAGDIR/etc/schedule.cfg' replace='/etc/nagios/schedule.cfg'
+  become: yes
+
+- name: downtime_sched | modify file downtime_job.pl (nagios.cmd)
+  replace: dest=/usr/lib64/nagios/downtime_job.pl regexp='\$NAGDIR/log/rw/nagios.cmd' replace='/var/spool/nagios/cmd/nagios.cmd'
+  become: yes
+
+- name: downtime_sched | modify file downtime_job.pl (object.cache)
+  replace: dest=/usr/lib64/nagios/downtime_job.pl regexp='\$NAGDIR/log/objects.cache' replace='/var/log/nagios/objects.cache'
+  become: yes
+
+- name: downtime_sched | modify file downtime_job.pl (status.dat)
+  replace: dest=/usr/lib64/nagios/downtime_job.pl regexp='\$NAGDIR/log/status.dat' replace='/var/log/nagios/status.dat'
+  become: yes
+
+- name: downtime_sched | modify file downtime_job.pl (retention.dat)
+  replace: dest=/usr/lib64/nagios/downtime_job.pl regexp='\$NAGDIR/log/retention.dat' replace='/var/log/nagios/retention.dat'
+  become: yes
+
+- name: downtime_sched | modify file downtime_sched.cgi (schedule.cfg)
+  replace: dest=/usr/lib64/nagios/cgi-bin/downtime_sched.cgi regexp='\$NAGIOS/etc/schedule.cfg' replace='/etc/nagios/schedule.cfg'
+  become: yes
+
+- name: downtime_sched | modify file downtime_sched.cgi (cmd.cgi)
+  replace: dest=/usr/lib64/nagios/cgi-bin/downtime_sched.cgi regexp='\"/nagios/cgi-bin/cmd.cgi' replace='/usr/lib64/nagios/cgi-bin/cmd.cgi'
+  become: yes
+
+- name: downtime_sched | modify file downtime_sched.cgi (objects.cache)
+  replace: dest=/usr/lib64/nagios/cgi-bin/downtime_sched.cgi regexp='\$NAGIOS/log/objects.cache' replace='/var/log/nagios/objects.cache'
+  become: yes
+
+- name: downtime_sched | add crontab
+  cron: name="nagios_downtime" minute="15" hour="0" job="nagios perl /usr/lib64/nagios/downtime_job.pl > /dev/null 2>&1"
+
+- name: downtime_sched | side.php
+  lineinfile: dest=/usr/share/nagios/html/side.php regexp="Downtime" insertafter="<li><a href=\"<?php echo $cfg[\"cgi_base_url\"];?>/extinfo.cgi?type=6\" target=\"<?php echo $link_target;?>\">Downtime</a></li>" line="<li><a href=\"<?php echo $cfg[\"cgi_base_url\"];?>/extinfo.cgi?type=6\" target=\"<?php echo $link_target;?>\">Downtime</a></li><li><a href=\"<?php echo $cfg[\"cgi_base_url\"];?>/downtime_sched.cgi\" target=\"<?php echo $link_target;?>\">Recurring Downtime</a></li>"
+
