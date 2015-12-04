@@ -1,5 +1,0 @@
----
-- cron: name="dummy update" weekday="2" minute=0 hour=12
-        user="root" job="echo \"hello dummy\""
-        cron_file=dummy
-  become: yes

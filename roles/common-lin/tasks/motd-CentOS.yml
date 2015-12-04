@@ -1,8 +1,0 @@
----
-- name: distribute motd file for centos
-  template: src=centos-motd.j2
-            dest=/etc/motd
-            owner=root
-            group=root
-            mode=0644
-  become: yes

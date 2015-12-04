@@ -1,6 +1,0 @@
----
-# handlers file for common-win
-- name: restart nsclient
-  win_service:
-    name: nscp
-    state: restarted

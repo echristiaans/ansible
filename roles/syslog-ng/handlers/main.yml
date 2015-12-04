@@ -1,5 +1,0 @@
----
-- name: reload syslog_ng
-  service:
-    name=syslog-ng
-    state=reloaded

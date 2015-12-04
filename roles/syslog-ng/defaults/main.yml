@@ -1,3 +1,0 @@
----
-# defaults file for syslog-ng
-syslog_ng_root: "/var/log"
