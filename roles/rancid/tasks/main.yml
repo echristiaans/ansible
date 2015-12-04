@@ -3,6 +3,7 @@
   yum: name={{item}} state=installed
   with_items: rancid_pkgs
   register: rancid_install
+  become: yes
 
 - name: create RANCID user
   user: name=rancid comment="RANCID user"
@@ -10,22 +11,26 @@
         home={{rancid_home}}
         shell={{rancid_shell}}
         password={{rancid_encrypted_password}}
+  become: yes
 
 - name: template rancid.conf
   template: src=rancid.conf.j2 dest={{rancid_conf}}
             owner=root group=root mode=0644
+  become: yes
 
 - name: initialize RANCID directories
   command: su - rancid -c rancid-cvs
   when: rancid_install.changed
+  become: yes
 
 - name: template RANCID router files
   with_items: rancid_groups
   template: src=router.db.j2 dest={{rancid_home}}/{{item}}/router.db
             owner=rancid group=rancid mode=0640
-
+  become: yes
 # something should deploy cloginrc
 
 - name: template RANCID crontab
   template: src=rancid.cron.j2 dest=/etc/cron.d/rancid
             owner=root group=root mode=0644
+  become: yes
