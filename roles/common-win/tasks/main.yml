@@ -1,0 +1,7 @@
+---
+- include: nsclient.yml
+- include: 7zip.yml
+- include: npp.yml
+- include: sysinternals.yml
+- include: wireshark.yml
+- include: ie.yml

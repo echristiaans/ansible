@@ -1,0 +1,22 @@
+---
+- name: pnp4nagios | install the latest version of pnp4nagios
+  yum: name=pnp4nagios state=present
+  become: yes
+
+- name: pnp4nagios | Create a VirtualHost file pnp4nagios
+  template:
+    src=pnp4nagios_vhost.conf.j2
+    dest=/etc/httpd/conf.d/pnp4nagios.conf
+    owner=root
+    group=root
+    mode=0644
+  with_items: nagios_vhosts_enabled
+  notify:
+    - reload httpd
+
+- name: pnp4nagios| create dir for symlink
+  file: path=/usr/local/pnp4nagios/libexec/ state=directory mode=0755
+
+- name: pnp4nagios | create symlink for legacy reasons
+  file: src=/usr/libexec/pnp4nagios/process_perfdata.pl dest=/usr/local/pnp4nagios/libexec/process_perfdata.pl owner=root group=root state=link
+

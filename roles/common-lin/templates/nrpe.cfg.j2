@@ -1,0 +1,21 @@
+#{{ ansible_managed }}
+
+log_facility=daemon
+allow_bash_command_substitution=0
+
+pid_file=/var/run/nrpe.pid
+server_port=5666
+
+nrpe_user=nagios
+nrpe_group=nagios
+dont_blame_nrpe=1
+debug=0
+command_timeout=60
+connection_timeout=300
+allowed_hosts=127.0.0.1,{{ nrpe_allowed_hosts }}
+include_dir=/etc/nagios/nrpe.d
+{% if nrpe_commands is defined %}
+{% for command in nrpe_commands %}
+{{ command }}
+{% endfor %}
+{% endif %}

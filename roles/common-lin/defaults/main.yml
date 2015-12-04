@@ -1,0 +1,16 @@
+---
+# defaults file for common-lin
+ntp_timezone: Europe/Amsterdam
+ntp_servers: 
+  - nl.pool.org
+
+resolv_search: example.com
+resolv_nameservers:
+  - 6.6.6.6
+  - 8.8.8.8
+
+nrpe_allowed_hosts: "10.1.2.3,10.1.0.1"
+
+network_ether_interfaces: []
+network_bridge_interfaces: []
+network_bond_interfaces: []

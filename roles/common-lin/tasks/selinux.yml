@@ -1,0 +1,8 @@
+---
+- name: selinux | enable selinux
+  selinux: policy=targeted state=enforcing
+  become: yes
+
+- name: selinux | allow nagios check_disk 
+  raw: chcon -t nagios_unconfined_plugin_exec_t /usr/lib64/nagios/plugins/check_disk
+  become: yes

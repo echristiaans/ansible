@@ -1,0 +1,25 @@
+---
+# tasks file for common-win
+# Install an MSI file
+#
+- name: create temp dir
+  win_file: path=C:\tmp state=directory
+
+- name: test stat module on msi file
+  win_stat: path='C:\tmp\7z1506-x64.exe'
+  register: stat_msi_file
+
+- name: download 7zip
+  win_get_url:
+    url: 'http://www.7-zip.org/a/7z1506-x64.exe'
+    dest: 'C:\tmp\7z1506-x64.exe'
+  when: not stat_msi_file.stat.exists
+
+- name: test stat module on 7zip dir
+  win_stat: path='C:\Program Files\7-Zip\7zFM.exe'
+  register: stat_7zip_file
+
+- name: install 7zip
+  raw: 'C:\tmp\7z1506-x64.exe /S'
+  when: not stat_7zip_file.stat.exists
+

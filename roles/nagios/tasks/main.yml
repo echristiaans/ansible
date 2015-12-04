@@ -1,0 +1,6 @@
+---
+# tasks file for nagios
+- include: nagios.yml
+- include: pnp4nagios.yml
+- include: nagios_config.yml
+- include: downtime_sched.yml

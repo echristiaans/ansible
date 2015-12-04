@@ -1,0 +1,59 @@
+---
+  - name: Copy UAC check
+    win_copy: src=CheckLua.ps1 dest=c:\scripts\CheckLua.ps1
+
+  - name : Run UAC Check and fail playbook if UAC is enabled 
+    script : CheckLua.ps1
+    register: script_result
+    changed_when: "'FAILED' in script_result.stdout"
+    failed_when: "'FAILED' in script_result.stdout"
+
+  - name: Install Failover Clustering
+    win_feature:
+      name: "Failover-Clustering"
+      state: present
+      restart: no
+      include_sub_features: no
+      include_management_tools: yes
+    when: FirstClusterNode
+
+  - name: Stat MSSQL exe
+    win_stat: path='D:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\Binn\sqlservr.exe'
+    register: stat_mssql_exe
+
+  - name: Stat MSSQL iso 
+    win_stat: path='C:\scripts\SW_DVD9_SQL_Svr_Standard_Edtn_2014w_SP1_64Bit_English_-2_MLF_X20-29010.iso'  
+    register: stat_mssql_iso
+    when: not stat_mssql_exe.stat.exists
+
+  - name: Download MSSQL 2014 iso
+    win_get_url: 
+     url: 'http://sen-ans-g1/repo/SW_DVD9_SQL_Svr_Standard_Edtn_2014w_SP1_64Bit_English_-2_MLF_X20-29010.iso'
+     dest: 'C:\Scripts\SW_DVD9_SQL_Svr_Standard_Edtn_2014w_SP1_64Bit_English_-2_MLF_X20-29010.iso'
+    when: not stat_mssql_iso.stat.exists
+
+#  - name: Write reboot to file
+#    raw: echo "rebooting" > C:\Scripts\test.log
+#
+#  - name: Run raw test
+#    raw: shutdown /r
+#
+#  - name: wait for windows system reboot
+#    local_action:
+#      module: wait_for
+#      host: "{{ inventory_hostname }}"
+#      port: 5986
+#      delay: 30
+#      timeout: 600
+#      state: started
+#
+#  - name: Rebooted 
+#    raw: echo "i have rebooted and will now copy files" >> C:\Scripts\test.log
+
+  - win_copy: src=SQL-2014.ini dest=c:\scripts\SQL-2014.ini
+  - win_copy: src=Install-SQL2014.ps1 dest=c:\scripts\Install-SQL2014.ps1
+
+  - name: Write have copied files
+    raw: echo "i have copied files" >> C:\Scripts\test.log
+  - name : Run SQL2014 install
+    script : Install-SQL2014.ps1

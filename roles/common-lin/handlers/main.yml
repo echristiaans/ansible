@@ -1,0 +1,17 @@
+---
+# handlers file for common-lin
+- name: restart ntp
+  service: name=ntpd enabled=yes state=restarted
+  become: yes
+
+- name: restart snmpd
+  service: name=snmpd enabled=yes state=restarted
+  become: yes
+
+- name: restart sshd
+  action: service enabled=yes name=sshd state=restarted
+  become: yes
+
+- name: restart nrpe
+  action: service enabled=yes name=nrpe state=restarted
+  become: yes
