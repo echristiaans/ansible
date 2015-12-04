@@ -3,6 +3,7 @@
   command: mysql -NBe 'SELECT Host FROM mysql.user WHERE User = "root" ORDER BY (Host="localhost") ASC'
   register: mysql_root_hosts
   changed_when: false
+  become: yes
 
 # Note: We do not use mysql_user for this operation, as it doesn't always update
 # the root password correctly. See: https://goo.gl/MSOejW
@@ -12,6 +13,7 @@
     'SET PASSWORD FOR "{{ mysql_root_username }}"@"{{ item }}" = PASSWORD("{{ mysql_root_password }}");'
   with_items: mysql_root_hosts.stdout_lines
   when: mysql_install_packages | bool or mysql_root_password_update
+  become: yes
 
 # Has to be after the root password assignment, for idempotency.
 - name: Copy .my.cnf file with root password credentials.
@@ -21,11 +23,13 @@
     owner: root
     group: root
     mode: 0600
+  become: yes
 
 - name: Get list of hosts for the anonymous user.
   command: mysql -NBe 'SELECT Host FROM mysql.user WHERE User = ""'
   register: mysql_anonymous_hosts
   changed_when: false
+  become: yes
 
 - name: Remove anonymous MySQL users.
   mysql_user:
@@ -33,6 +37,8 @@
      host: "{{ item }}"
      state: absent
   with_items: mysql_anonymous_hosts.stdout_lines
+  become: yes
 
 - name: Remove MySQL test database.
   mysql_db: "name='test' state=absent"
+  become: yes
