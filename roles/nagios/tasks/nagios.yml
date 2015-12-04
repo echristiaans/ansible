@@ -152,12 +152,12 @@
   copy: src=nagios_config_check.pp dest=/etc/selinux/rules/nagios_config_check.pp
 
 - name: SELinux | selinux (check service nagios config module)
-  shell: semodule -i /etc/selinux/rules/nagios_config_check.pp
+  shell: /sbin/semodule -i /etc/selinux/rules/nagios_config_check.pp
   changed_when: False
 
 - name: SELinux | selinux copy selinux file to /etc/selinux/rules/nagios_ldap.pp
   copy: src=nagios_ldap.pp dest=/etc/selinux/rules/nagios_ldap.pp
 
 - name: SELinux | selinux (http/ nagios ldap authentication module)
-  shell: semodule -i /etc/selinux/rules/nagios_ldap.pp
+  shell: /sbin/semodule -i /etc/selinux/rules/nagios_ldap.pp
   changed_when: False
