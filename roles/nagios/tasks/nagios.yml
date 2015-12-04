@@ -38,14 +38,17 @@
 - name: Nagios | check if perl vm sdk is installed
   stat: path=/usr/share/doc/vmware-viperl/EULA
   register: vm_sdk_installed
+  become: yes
 
 - name: Nagios | unpack perl vm sdk for check_vmware_api.pl
   unarchive: src=VMware-VIPerl-1.6.0-104313.x86_64.tar dest=/tmp
   when: not vm_sdk_installed.stat.exists
+  become: yes
 
 - name: Nagios | install perl vm sdk for check_vmware_api.pl
   shell: cd /tmp/vmware-viperl-distrib && yes | PAGER=cat ./vmware-install.pl default
   when: not vm_sdk_installed.stat.exists
+  become: yes
 
 - name: Nagios | install cpan for check_vmware_api.pl
   yum: name=cpan state=present
@@ -62,6 +65,7 @@
 - name: Nagios | initiate first time run cpan
   shell: (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan
   changed_when: False 
+  become: yes
 
 - name: Nagios | install dependencies (perl-XML-LibXML) for check_vmware_api.pl
   yum: name=perl-XML-LibXML state=present
@@ -114,6 +118,7 @@
 
 - name: Nagios | enable nagios and start it
   service: name=nagios enabled=yes state=started
+  become: yes
 
 - name: Nagios | install passlib
   yum: name=python-passlib state=present
@@ -133,6 +138,7 @@
   with_items: nagios_vhosts_enabled
   notify:
     - reload httpd
+  become: yes
 
 - name: Nagios | clearout blank lines in htpasswd
   shell: perl -ni -e 'print unless /^$/' /etc/nagios/passwd
@@ -141,23 +147,30 @@
 
 - name: Nagios | create nagiosadmin htpasswd
   htpasswd: path=/etc/nagios/passwd name=nagiosadmin password={{ nagiosadmin_passwd }} owner=root mode=0644
+  become: yes
 
 - name: Nagios | make sure nagios can login
   user: name=nagios shell=/bin/bash append=yes
+  become: yes
 
 - name: SELinux | Creates directory selinux rules
   file: path=/etc/selinux/rules state=directory
+  become: yes
 
 - name: SELinux | selinux copy selinux file to /etc/selinux/rules/nagios_config_check.pp
   copy: src=nagios_config_check.pp dest=/etc/selinux/rules/nagios_config_check.pp
+  become: yes
 
 - name: SELinux | selinux (check service nagios config module)
   shell: /sbin/semodule -i /etc/selinux/rules/nagios_config_check.pp
   changed_when: False
+  become: yes
 
 - name: SELinux | selinux copy selinux file to /etc/selinux/rules/nagios_ldap.pp
   copy: src=nagios_ldap.pp dest=/etc/selinux/rules/nagios_ldap.pp
+  become: yes
 
 - name: SELinux | selinux (http/ nagios ldap authentication module)
   shell: /sbin/semodule -i /etc/selinux/rules/nagios_ldap.pp
   changed_when: False
+  become: yes
