@@ -116,6 +116,10 @@
   yum: name=perl-DateTime state=present
   become: yes
 
+- name: Nagios | make sure logpath exists
+  file: path=/etc/some_directory state=directory mode=0755 owner=nagios group=nagios
+  become: yes
+
 - name: Nagios | enable nagios and start it
   service: name=nagios enabled=yes state=started
   become: yes
