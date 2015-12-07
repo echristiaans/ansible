@@ -1,0 +1,32 @@
+---
+# vars file for webapp_bba
+MailHost: 213.214.20.46
+SelfServiceUrl: https://bbaselfservice/
+SelfServicePortalUrl: http://iamselfservice/
+ApiUrl: https://bbaapi/
+
+# BBA API & Back Office Specific vars
+DataSource: fca-db-a01
+DatabaseName: BBA_Acceptatie
+FSPath: d:\bba-acc-data\
+SCIMEndpointUser: admin
+SCIMEndpointPassword: O4ColTwDJqh14pYQ
+SCIMEndpointUrl: https://accept-focuscura.iwelcome.com/api/scim/v1.1/Users
+AuthenticatieEndpointUser: beeldBelApp
+AuthenticatieEndpointPassword: SNVB7zRDJTjGQr
+AuthenticatieEndpointUrl: https://accept-focuscura.iwelcome.com/am/oauth2/token
+CertificateResourceVersion: TEST
+CertificatePassword: Test1234
+NloglogDirectory: D:\bba-logs\www.acceptatie.beeldbelapp.nl\
+
+# BBA Back Office Specific vars
+ForgotPasswordUrl: http://iamselfservice/PasswordReset/SendInstructions?lang={0}
+NloglogDirectoryBO: D:\bba-logs\beheer.acceptatie.beeldbelapp.nl\
+
+# IAM Self Service Specific vars
+DatabaseNameIAMss: IAM_Acceptatie
+MaxMindUserId: "105257"
+MaxMindLicenseKey: m8eMEypgKcYm
+BasicAuthUsername: bba
+BasicAuthPassword: ;QFb4iqdRP0jSTHF^*mZ
+PrivacyStatementBaseUrl: http://drupal.pal4.nl/sites/default/files/redactie/BBA/

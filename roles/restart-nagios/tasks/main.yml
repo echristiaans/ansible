@@ -1,0 +1,3 @@
+---
+# tasks file for restart-nagios
+- include: restart-nagios.yml

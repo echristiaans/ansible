@@ -1,0 +1,10 @@
+---
+- name: nginx_certs | copy crt files
+  copy: src={{ item.certificate }}.crt dest=/etc/pki/tls/certs/{{ item.certificate }}.crt
+  with_items: nginx_vhosts
+  become: yes
+
+- name: nginx_certs | copy key files
+  copy: src={{ item.certificate }}.key dest=/etc/pki/tls/private/{{ item.certificate }}.key
+  with_items: nginx_vhosts
+  become: yes

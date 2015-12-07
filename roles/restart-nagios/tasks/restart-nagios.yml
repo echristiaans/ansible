@@ -1,0 +1,30 @@
+---
+- name: Config Nagios | copy common commands
+  copy: src=/home/ansible/ansible/teams/charlie/common/Nagios/Server/commands.cfg dest=/etc/nagios/objects/commands.cfg
+  become: yes
+  notify:
+    - reload nagios
+
+- name: Config Nagios | copy nagios config
+  copy: src={{ l3source_base }}/{{ customer }}/nagios_config/objects/ dest=/etc/nagios/objects owner=nagios group=nagios mode=0644
+  become: yes
+  notify:
+    - reload nagios
+
+- name: Config Nagios | copy cgi.cfg config  
+  copy: src={{ l3source_base }}/{{ customer }}/nagios_config/cgi.cfg dest=/etc/nagios/cgi.cfg owner=nagios group=nagios mode=0644
+  become: yes
+  notify:
+    - reload nagios
+
+- name: Config Nagios | copy nagios.cfg config
+  copy: src={{ l3source_base }}/{{ customer }}/nagios_config/nagios.cfg dest=/etc/nagios/nagios.cfg owner=nagios group=nagios mode=0644
+  become: yes
+  notify:
+    - reload nagios
+
+- name: Config Nagios | copy resource.cfg config
+  copy: src={{ l3source_base }}/{{ customer }}/nagios_config/resource.cfg dest=/etc/nagios/private/resource.cfg owner=nagios group=nagios mode=0644
+  become: yes
+  notify:
+    - reload nagios
