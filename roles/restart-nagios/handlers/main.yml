@@ -3,3 +3,4 @@
   service:
     name=nagios
     state=reloaded
+  become: yes
