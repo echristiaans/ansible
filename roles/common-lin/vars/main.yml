@@ -16,6 +16,7 @@ sshusers:
   - wniels
   - toml
   - echristi
+  - eelko
 
 env:
  RUNLEVEL: 1
