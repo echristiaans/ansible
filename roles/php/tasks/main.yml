@@ -2,12 +2,15 @@
 
 - name: Install PHP mod
   yum: name=php state=present
+  become: yes
 
 - name: Install PHP common mods
   yum: name=php-gd state=present
+  become: yes
 
 - name: Install PHP common mods
   yum: name=php-mcrypt state=present
+  become: yes
 
 - name: set date.timezone in php.ini
   replace: dest=/etc/php.ini regexp=';date.timezone =' replace='date.timezone = "Europe/Amsterdam"'
