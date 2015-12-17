@@ -1,5 +1,5 @@
 ---
-# tasks file for app_tentacle ++
+# tasks file for app_tentacle +++
 - name: Download Octopus Tentacle
   win_get_url:
    url: 'http://sen-ans-g1/repo/Octopus.Tentacle.2.6.5.1010-x64.msi'
