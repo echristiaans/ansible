@@ -8,7 +8,7 @@
   win_get_url:
    url: 'http://sen-ans-g1/repo/Octopus.Tentacle.2.6.5.1010-x64.msi'
    dest: 'C:\Scripts\Octopus.Tentacle.2.6.5.1010-x64.msi'
-  when: not stat_octopus_msi.stat.exists
+  #when: not stat_octopus_msi.stat.exists
 
 - name: Install Octopus
   win_msi:
