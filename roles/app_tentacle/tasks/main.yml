@@ -1,7 +1,7 @@
 ---
 # tasks file for app_tentacle +++
 #- include: install.yml
-- include: configure.yml
+#- include: configure.yml
 
 - name: Stat Octoput Tentacle MSI
   win_stat: path='C:\Scripts\Octopus.Tentacle.2.6.5.1010-x64.msi'
