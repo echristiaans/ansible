@@ -1,7 +1,7 @@
 ---
 # Configure tentacle
 - name: Create Tentacle Instance  
-  raw: '"D:\Octopus Deploy\Tentacle\Tentacle.exe" create-instance --instance "Tentacle" --config "D:\Octopus\Tentacle\Tentacle.config'
+  raw: '"D:\Octopus Deploy\Tentacle\Tentacle.exe" create-instance --instance "Tentacle" --config "D:\Octopus\Tentacle\Tentacle.config"'
   raw: '"D:\Octopus Deploy\Tentacle\Tentacle.exe" new-certificate --instance "Tentacle" --if-blank'
   raw: '"D:\Octopus Deploy\Tentacle\Tentacle.exe" new-squid --instance "Tentacle"' 
   raw: '"D:\Octopus Deploy\Tentacle\Tentacle.exe" configure --instance "Tentacle" --reset-trust'
