@@ -1,0 +1,23 @@
+---
+# tasks file for app_tentacle
+- name: Download Octopus Tentacle 2.6.5.1010
+    win_get_url: 
+     url: 'http://sen-ans-g1/repo/Octopus.Tentacle.2.6.5.1010-x64.msi'
+     dest: 'C:\Scripts\Octopus.Tentacle.2.6.5.1010-x64.msi'
+
+- name: Install Octopus
+    win_msi: 
+     path: 'C:\Scripts\\Octopus.Tentacle.2.6.5.1010-x64.msi'
+     creates: 'D:\Octopus'
+     extra_args: 'INSTALLLOCATION=D:\Octopus'
+
+#- name: install Octopus Tentacle
+#  raw: 'msiexec INSTALLLOCATION=D:\Octopus /i Octopus.Tentacle.2.6.5.1010-x64.msi /quiet'
+
+# Install an MSI file
+#- win_msi: path=C:\\7z920-x64.msi
+
+# Uninstall an MSI file
+#- win_msi: path=C:\\7z920-x64.msi state=absent
+
+
