@@ -6,5 +6,5 @@
         name: "Web-Server"
         state: present
         restart: no
-        include_sub_features: no
+        include_sub_features: yes
         include_management_tools: yes
