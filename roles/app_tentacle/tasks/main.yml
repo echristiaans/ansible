@@ -1,7 +1,7 @@
 ---
-# tasks file for app_tentacle
+# tasks file for app_tentacle +
 - name: Download Octopus Tentacle 2.6.5.1010
-    win_get_url: 
+    win_get_url:
      url: 'http://sen-ans-g1/repo/Octopus.Tentacle.2.6.5.1010-x64.msi'
      dest: 'C:\Scripts\Octopus.Tentacle.2.6.5.1010-x64.msi'
 
@@ -19,5 +19,3 @@
 
 # Uninstall an MSI file
 #- win_msi: path=C:\\7z920-x64.msi state=absent
-
-
