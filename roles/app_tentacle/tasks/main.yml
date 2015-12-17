@@ -13,5 +13,5 @@
 - name: Install Octopus
   win_msi:
    path: 'C:\Scripts\\Octopus.Tentacle.2.6.5.1010-x64.msi'
-   creates: 'D:\Octopus'
+   creates: 'D:\OctopusVarDir'
    extra_args: 'INSTALLLOCATION= {{ octopus.installdir }}'
