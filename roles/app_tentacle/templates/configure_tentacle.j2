@@ -5,5 +5,5 @@
 & "{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --reset-trust --console
 & "{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --home "{{ octopus.tentaclehomedir }}" --app "{{ octopus.tentacleappdir }}" --port "{{ octopus.tentacleport }}" --noListen "False" --console
 & "{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --trust "{{ octopus.tentacletrustkey }}" --console
-& "netsh" advfirewall firewall add rule "name=Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport={{ octopus.tentacleport }} --console
+& netsh advfirewall firewall add rule name="Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport={{ octopus.tentacleport }} --console
 & "{{ octopus.installdir }}\Tentacle.exe" service --instance "{{ octopus.tentacleinstance }}" --install --start --console
