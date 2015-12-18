@@ -8,9 +8,7 @@
 - raw: '{{ octopus.tentacleconfdest }}'
   when: octopus.tentacleconfigure
 
--name: Remove Tentacle Config
- win_template: src=remove_tentacle.j2 dest="{{ octopus.tentacleremoveconfdest }}"
- raw: '{{ octopus.tentacleremoveconfdest }}'
- when: octopus.tentacleremoveconfig
-
-
+- name: Remove Tentacle Config
+  win_template: src=remove_tentacle.j2 dest="{{ octopus.tentacleremoveconfdest }}"
+  raw: '{{ octopus.tentacleremoveconfdest }}'
+  when: octopus.tentacleremoveconfig
