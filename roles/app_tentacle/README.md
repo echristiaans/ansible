@@ -25,6 +25,8 @@ vars:
 	 tentacleinstance: 'Tentacle'													# Tentacle instance name
 	 tentacletrustkey: '1F87554E02DB886385798198791463D0B4163DDC'					# Tentacle trust key
 	 tentacleport: '10933'															# Tentacle listen port.
+     tentacleconfdest: 'C:\\scripts\\configure_tentacle.ps1'                        # Tentacle configuration Posh script location.
+     tentacleconfigure: true                                                        # Run the configuration or not (do not forget to change this to false after succesful run!)
 
 Dependencies
 ------------
@@ -55,6 +57,8 @@ Including an example of how to use your role (for instance, with variables passe
          tentacleinstance: 'Tentacle'
          tentacletrustkey: '000000000000000000000000000000000000000'
          tentacleport: '10933'
+         tentacleconfdest: 'C:\\scripts\\configure_tentacle.ps1'
+         tentacleconfigure: true
 
 License
 -------
