@@ -1,6 +1,6 @@
 ---
 # tasks file for app_tentacle +++++
-#- include: install.yml
+- include: install.yml
 
 - win_template: src=configure_tentacle.j2 dest="{{ octopus.tentacleconfdest }}"
   when: octopus.tentacleconfigure
