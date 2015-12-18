@@ -1,5 +1,5 @@
 ---
-# tasks file for app_tentacle ++++
+# tasks file for app_tentacle +++++
 - include: install.yml
 #- include: configure.yml
 - win_template: src=configure_tentacle.j2 dest="C:\scripts\configure_tentacle.cmd"
