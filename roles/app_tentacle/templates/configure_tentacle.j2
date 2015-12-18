@@ -1,9 +1,9 @@
 # add
-"D:\OctopusDeploy\Tentacle\Tentacle.exe" create-instance --instance "Tentacle" --config "D:\Octopus\Tentacle\Tentacle.config"
-"D:\OctopusDeploy\Tentacle\Tentacle.exe" new-certificate --instance "Tentacle" --if-blank
-"D:\OctopusDeploy\Tentacle\Tentacle.exe" new-squid --instance "Tentacle" 
-"D:\OctopusDeploy\Tentacle\Tentacle.exe" configure --instance "Tentacle" --reset-trust
-"D:\OctopusDeploy\Tentacle\Tentacle.exe" configure --instance "Tentacle" --home "D:\Octopus" --app "D:\Octopus\Applications" --port "10933" --noListen "False"
-"D:\OctopusDeploy\Tentacle\Tentacle.exe" configure --instance "Tentacle" --trust "1F87554E02DB886385798198791463D0B4163DDC"
-"netsh" advfirewall firewall add rule "name=Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport=10933
-"D:\OctopusDeploy\Tentacle\Tentacle.exe" service --instance "Tentacle" --install --start
+"{{ octopus.installdir }}\Tentacle.exe" create-instance --instance "{{ octopus.tentacleinstance }}" --config "{{ octopus.tentacledir }}\Tentacle.config"
+"{{ octopus.installdir }}\Tentacle.exe" new-certificate --instance "{{ octopus.tentacleinstance }}" --if-blank
+"{{ octopus.installdir }}\Tentacle.exe" new-squid --instance "{{ octopus.tentacleinstance }}" 
+"{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --reset-trust
+"{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --home "{{ octopus.tentaclehomedir }}" --app "{{ octopus.tentacleappdir }}" --port "{{ octopus.tentacleport }}" --noListen "False"
+"{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --trust "{{ octopus.tentacletrustkey }}"
+"netsh" advfirewall firewall add rule "name=Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport={{ octopus.tentacleport }}
+"{{ octopus.installdir }}\Tentacle.exe" service --instance "{{ octopus.tentacleinstance }}" --install --start
