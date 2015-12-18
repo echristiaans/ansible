@@ -1,7 +1,7 @@
 Role Name
 =========
 
-This role app_tentacle installs an Octopus LISTENING Tentacle version on a Windows server.
+This role app_tentacle installs a single Octopus LISTENING Tentacle version on a Windows server.
 It is tailored for a 2.x Octopus Tentacle, you can try a 3.x or adjust the playbook.
 
 Requirements
@@ -27,6 +27,8 @@ vars:
 	 tentacleport: '10933'															# Tentacle listen port.
      tentacleconfdest: 'C:\\scripts\\configure_tentacle.ps1'                        # Tentacle configuration Posh script location.
      tentacleconfigure: true                                                        # Run the configuration or not (do not forget to change this to false after succesful run!)
+     tentacleremoveconfig: true                                                     # Set tentacleremoveconfig: true to delete the tentacle specified in the vars
+                                                                                    # Combine this with the tentacleconfigure: false en reprovision you tentacle.
 
 Dependencies
 ------------
@@ -38,6 +40,7 @@ Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+This role provides a single tentacle.
 
 ---
   - hosts: fca-web-xxx.domain.nl
