@@ -1,4 +1,3 @@
-# add
 "{{ octopus.installdir }}\Tentacle.exe" create-instance --instance "{{ octopus.tentacleinstance }}" --config "{{ octopus.tentacledir }}\Tentacle.config"
 "{{ octopus.installdir }}\Tentacle.exe" new-certificate --instance "{{ octopus.tentacleinstance }}" --if-blank
 "{{ octopus.installdir }}\Tentacle.exe" new-squid --instance "{{ octopus.tentacleinstance }}" 
