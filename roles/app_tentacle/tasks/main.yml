@@ -3,10 +3,10 @@
 #- include: install.yml
 
 - win_template: src=configure_tentacle.j2 dest="{{ octopus.tentacleconfdest }}"
-  when: tentacleconfigure
+  when: octopus.tentacleconfigure
 
 - raw: '{{ octopus.tentacleconfdest }}'
-  when: tentacleconfigure
+  when: octopus.tentacleconfigure
 
 #- win_template: src=configure_tentacle.j2 dest="C:\scripts\remove_tentacle.cmd"
 #- raw: 'C:\\scripts\\remove_tentacle.cmd'
