@@ -1,17 +1,17 @@
 ---
 # tasks file for app_tentacle +++
-- name: Stat Octoput Tentacle MSI
-  win_stat: path='C:\Scripts\Octopus.Tentacle.2.6.5.1010-x64.msi'
+- name: Stat Octopus Tentacle MSI
+  win_stat: path='{{ octopus.downloaddest }}'
   register: stat_octcopus_msi
 
 - name: Download Octopus Tentacle
   win_get_url:
-   url: 'http://sen-ans-g1/repo/Octopus.Tentacle.2.6.5.1010-x64.msi'
-   dest: 'C:\Scripts\Octopus.Tentacle.2.6.5.1010-x64.msi'
+   url: '{{ octopus.downloadurl }}'
+   dest: '{{ octopus.downloaddest }}'
   #when: not stat_octopus_msi.stat.exists
 
 - name: Install Octopus
   win_msi:
-   path: 'C:\Scripts\\Octopus.Tentacle.2.6.5.1010-x64.msi'
-   creates: '"D:\\OctopusDeploy\Tentacle"' 
+   path: '{{ octopus.downloaddest }}'
+   creates: '"{{ octopus.installdir }}"' 
    extra_args: 'INSTALLLOCATION="{{ octopus.installdir }}"'

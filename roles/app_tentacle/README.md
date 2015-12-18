@@ -1,31 +1,60 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+This role app_tentacle installs an Octopus LISTENING Tentacle version on a Windows server.
+It is tailored for a 2.x Octopus Tentacle, you can try a 3.x or adjust the playbook.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Windows Server capable for installing MSI's.
+Put your desired Octopus Tentacle version on a repo you can download from.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+@Sentia we place vars in the host.yml, you can use these variables :
+
+vars:
+  octopus:
+	 installdir: 'D:\\OctopusDeploy\\Tentacle'										# Where the tentacle binaries are installed , DO NOT USE A SPACE IN THIS PATH !
+	 downloadurl: 'http://sen-ans-g1/repo/Octopus.Tentacle.2.6.5.1010-x64.msi'		# Specify your download URL
+	 tentaclehomedir: 'D:\\Octopus'													# Homedir for created tentacles
+	 tentacledir: 'D:\\Octopus\\Tentacle'											# Directory where tentacle configs are stored
+	 tentacleappdir: 'D:\\Octopus\\Applications'									# Directory where Octopus application builds are put
+	 tentacleinstance: 'Tentacle'													# Tentacle instance name
+	 tentacletrustkey: '1F87554E02DB886385798198791463D0B4163DDC'					# Tentacle trust key
+	 tentacleport: '10933'															# Tentacle listen port.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+common-win
+iis
 
 Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+---
+  - hosts: fca-web-xxx.domain.nl
+    roles:
+     - role: common-win
+     - role: iis
+     - role: app_tentacle
+
+    vars:
+       octopus:
+         installdir: 'D:\\OctopusDeploy\\Tentacle'
+         downloadurl: 'http://sen-ans-g1/repo/Octopus.Tentacle.2.6.5.1010-x64.msi'
+         downloaddest: 'C:\Scripts\Octopus.Tentacle.2.6.5.1010-x64.msi'
+         tentaclehomedir: 'D:\\Octopus'
+         tentacledir: 'D:\\Octopus\\Tentacle'
+         tentacleappdir: 'D:\\Octopus\\Applications'
+         tentacleinstance: 'Tentacle'
+         tentacletrustkey: '000000000000000000000000000000000000000'
+         tentacleport: '10933'
 
 License
 -------
@@ -35,4 +64,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Raymond Akker Sentia B.V.
