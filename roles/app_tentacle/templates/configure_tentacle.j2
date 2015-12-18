@@ -1,9 +1,9 @@
 # add
-"{{ octopus.installdir }}\Tentacle.exe" create-instance --instance "{{ octopus.tentacleinstance }}" --config "{{ octopus.tentacledir }}\Tentacle.config"
-"{{ octopus.installdir }}\Tentacle.exe" new-certificate --instance "{{ octopus.tentacleinstance }}" --if-blank
-"{{ octopus.installdir }}\Tentacle.exe" new-squid --instance "{{ octopus.tentacleinstance }}" 
-"{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --reset-trust
-"{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --home "{{ octopus.tentaclehomedir }}" --app "{{ octopus.tentacleappdir }}" --port "{{ octopus.tentacleport }}" --noListen "False"
-"{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --trust "{{ octopus.tentacletrustkey }}"
-"netsh" advfirewall firewall add rule "name=Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport={{ octopus.tentacleport }}
-"{{ octopus.installdir }}\Tentacle.exe" service --instance "{{ octopus.tentacleinstance }}" --install --start
+"{{ octopus.installdir }}\Tentacle.exe" create-instance --instance "{{ octopus.tentacleinstance }}" --config "{{ octopus.tentacledir }}\Tentacle.config" --console
+"{{ octopus.installdir }}\Tentacle.exe" new-certificate --instance "{{ octopus.tentacleinstance }}" --if-blank --console
+"{{ octopus.installdir }}\Tentacle.exe" new-squid --instance "{{ octopus.tentacleinstance }}" --console
+"{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --reset-trust --console
+"{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --home "{{ octopus.tentaclehomedir }}" --app "{{ octopus.tentacleappdir }}" --port "{{ octopus.tentacleport }}" --noListen "False" --console
+"{{ octopus.installdir }}\Tentacle.exe" configure --instance "{{ octopus.tentacleinstance }}" --trust "{{ octopus.tentacletrustkey }}" --console
+"netsh" advfirewall firewall add rule "name=Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport={{ octopus.tentacleport }} --console
+"{{ octopus.installdir }}\Tentacle.exe" service --instance "{{ octopus.tentacleinstance }}" --install --start --console
