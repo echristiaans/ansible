@@ -7,7 +7,7 @@
   when: octopus.tentacleconfigure
 
 - name: Run Tentacle Configure Script
-- raw: '{{ octopus.tentacleconfdest }}'
+  raw: '{{ octopus.tentacleconfdest }}'
   when: octopus.tentacleconfigure
 
 - name: Copy Tentacle Remove Script
