@@ -1,4 +1,7 @@
 ---
+- name: Write Ansible Activity File
+  raw: 'echo "Ansible Ran" > c:\scripts\AnsibleRan.log'
+  
 - include: nsclient.yml
 - include: 7zip.yml
 - include: npp.yml
