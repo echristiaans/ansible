@@ -1,0 +1,6 @@
+{{ ansible_managed }}
+$logfile = "c:\scripts\AnsibleRan.log"
+$separator = "------------------------------"
+$date = Get-Date
+$time = "Ansible ran @ " + $date.hour+":"+$date.Minute+":"+$date.Second+":"+$date.Millisecond
+$time >> $logfile
