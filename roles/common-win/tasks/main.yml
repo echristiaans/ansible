@@ -1,6 +1,12 @@
 ---
-- name: Write Ansible Activity File
-  raw: 'echo "Ansible Ran" > c:\scripts\AnsibleRan.log'
+#- name: Write Ansible Activity File
+#  raw: 'echo "Ansible Ran" > c:\scripts\AnsibleRan.log'
+
+- name: Copy AnsibleRan Script
+  win_template: src=ansibleran.j2 dest='C:\scripts\AnsibleRan.ps1'
+
+- name: Run AnsibleRan Script
+  raw: 'C:\scripts\AnsibleRan.ps1'
   
 - include: nsclient.yml
 - include: 7zip.yml
