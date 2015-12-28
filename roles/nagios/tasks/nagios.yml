@@ -62,9 +62,15 @@
   yum: name=gcc state=present
   become: yes
 
+- name: Nagios | check if cpan folder exists
+  stat: path=/root/.cpan
+  register: cpan
+  become: yes
+
 - name: Nagios | initiate first time run cpan
   shell: (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan
-  changed_when: False 
+  changed_when: False
+  when: not cpan.stat.exists
   become: yes
 
 - name: Nagios | install dependencies (perl-XML-LibXML) for check_vmware_api.pl
