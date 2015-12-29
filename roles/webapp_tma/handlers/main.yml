@@ -1,6 +1,0 @@
----
-# handlers file for webapp_tma
-
-- name: restart sshd
-  action: service enabled=yes name=sshd state=restarted
-  become: yes
