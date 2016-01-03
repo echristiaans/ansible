@@ -75,7 +75,7 @@
 #  become: yes
 
 - name: PHPBrew | Install file
-  template: src=installphp.j2 dest=/root/installphp.sh
+  template: src=installphp.j2 dest=/root/installphp.sh owner=root group=root mode="u+rwx,g+rx,o+rx"
   become: yes
 
 - name: PHPBrew | Install with script
