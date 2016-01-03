@@ -79,5 +79,5 @@
   become: yes
 
 - name: PHPBrew | Install with script
-  script: /root/installphp.sh
+  raw: /root/installphp.sh
   become: yes
