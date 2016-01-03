@@ -52,15 +52,20 @@
   raw: phpbrew init
   become: yes
 
-#- name: PHPBrew | Init File for Root
-#  template: src=init.j2 dest=/root/.phpbrew/init
-#  become: yes
-
-#- name: PHPBrew | Add PHPBrew.rc to .bashrc
-#  lineinfile: dest=/root/.bashrc line='source ~/.phpbrew/bashrc'
-#  become: yes
+- name: PHPBrew | Stat Updates
+  stat: path=/root/.phpbrew/php-releases.json
+  register: updates_st
 
 - name: PHPBrew | Update 
   raw: phpbrew update --old
+  become: yes
+  when: not updates_st.stat.exists
+
+- name: PHPBrew | Init File for Root
+  template: src=init.j2 dest=/root/.phpbrew/init
+  become: yes
+
+- name: PHPBrew | Add PHPBrew.rc to .bashrc
+  lineinfile: dest=/root/.bashrc line='source ~/.phpbrew/bashrc'
   become: yes
 
