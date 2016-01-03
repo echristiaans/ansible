@@ -52,9 +52,6 @@
   template: src=init.j2 dest=/root/.phpbrew/init
   become: yes
 
-#- name: add a new string at the end of the file
-#  lineinfile: dest=/root/.bashrc 
-#              regexp=''
-#              insertafter=EOF
-#              line='source ~/.phpbrew/bashrc'
-#  become: yes
+- name: add a new string at the end of the file
+  lineinfile: dest=/root/.bashrc line='source ~/.phpbrew/bashrc'
+  become: yes
