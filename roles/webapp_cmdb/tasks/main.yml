@@ -48,10 +48,19 @@
   become: yes
   when: not initdir_st.stat.exists
 
-- name: PHPBrew | Init File for Root
-  template: src=init.j2 dest=/root/.phpbrew/init
+- name: PHPBrew | Init 
+  raw: phpbrew init
   become: yes
 
-- name: add a new string at the end of the file
-  lineinfile: dest=/root/.bashrc line='source ~/.phpbrew/bashrc'
+#- name: PHPBrew | Init File for Root
+#  template: src=init.j2 dest=/root/.phpbrew/init
+#  become: yes
+
+#- name: PHPBrew | Add PHPBrew.rc to .bashrc
+#  lineinfile: dest=/root/.bashrc line='source ~/.phpbrew/bashrc'
+#  become: yes
+
+- name: PHPBrew | Update 
+  raw: phpbrew update --old
   become: yes
+
