@@ -38,8 +38,16 @@
   raw: chmod a+x /usr/bin/phpbrew
   become: yes
 
+- name: PHPBrew | Check init directory
+  stat: path=/root/.phpbrew
+  register: initdir_st
+
+- name: PHPBrew | Create init directory
+  file: path=/root/.phpbrew state=directory
+  when: not initdir_st.stat.exists
+
 - name: PHPBrew | Init File for Root
-  template: src=init.j2 dest= /root/.phpbrew/init
+  template: src=init.j2 dest=/root/.phpbrew/init
   become: yes
 
 - name: add a new string at the end of the file
