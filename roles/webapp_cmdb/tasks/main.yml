@@ -75,7 +75,7 @@
 #  become: yes
 
 - name: PHPBrew | Copy install script
-  copy: src=installphp.sh dest=/root/installphp.sh owner=foo group=foo mode=0644\
+  copy: src=installphp.sh dest=/root/installphp.sh
   become: yes
 
 - name: PHPBrew | Install with script
