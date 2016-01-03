@@ -40,10 +40,12 @@
 
 - name: PHPBrew | Check init directory
   stat: path=/root/.phpbrew
+  become: yes
   register: initdir_st
 
 - name: PHPBrew | Create init directory
   file: path=/root/.phpbrew state=directory
+  become: yes
   when: not initdir_st.stat.exists
 
 - name: PHPBrew | Init File for Root
@@ -55,3 +57,4 @@
               regexp=''
               insertafter=EOF
               line='source ~/.phpbrew/bashrc'
+  become: yes
