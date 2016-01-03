@@ -8,13 +8,23 @@
   with_items: phpbrew_pkgs
   sudo: yes
 
+- name: PHPBrew | Check Symlink
+  stat: path=/usr/lib/libssl.so
+  register: libssl_st
+  
+- name: PHPBrew | Check Symlink
+  stat: path=/usr/lib/libcrypto.so
+  register: libcrypto_st
+ 
 - name: PHPBrew | Symlink PreReq 
   raw: ln -s /usr/lib64/libssl.so /usr/lib/libssl.so
   become: yes
+  when: not libssl_st.stat.exists
 
 - name: PHPBrew | Symlink PreReq
   raw: ln -s /usr/lib64/libcrypto.so /usr/lib/libcrypto.so
   become: yes
+  when: not libcrypto_st.stat.exists
  
 - name: PHPBrew | Download 
   raw: curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
