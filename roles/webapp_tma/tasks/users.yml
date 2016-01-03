@@ -1,0 +1,28 @@
+---
+# this playbook adds TMA specific development users
+- name: add infi_admin group
+  group: name={{ sshgroup }} state=present
+  become: yes
+
+- name: add infi users
+  group: name={{ item }} state=present
+  with_items: sshusers
+  become: yes
+
+- user: name={{ item }} group={{ sshgroup }}
+  with_items: sshusers
+  become: yes
+
+- name: create key directory
+  action: file path=/home/{{ item }}/.ssh/ state=directory
+    owner={{ item }} group={{ item }} mode=0700
+  with_items: sshusers
+  become: yes
+
+- name: upload info user keys
+  copy: src={{ item }}_rsa_id.pub dest=/home/{{ item }}/.ssh/authorized_keys owner={{ item }} group={{ item }} mode=0600 backup=no
+  with_items: sshusers
+  become: yes
+
+- name: edit sudoers add infi_admin
+  lineinfile: dest=/etc/sudoers state=present regexp='^%infi_admin ALL\=' line='%infi_admin ALL=(ALL) NOPASSWD:/bin/su' validate='visudo -cf %s'

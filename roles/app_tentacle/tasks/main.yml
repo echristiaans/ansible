@@ -1,0 +1,19 @@
+---
+# tasks file for app_tentacle +++++
+- include: install.yml
+
+- name: Copy Tentacle Configure Script
+  win_template: src=configure_tentacle.j2 dest="{{ octopus.tentacleconfdest }}"
+  when: octopus.tentacleconfigure
+
+- name: Run Tentacle Configure Script
+  raw: '{{ octopus.tentacleconfdest }}'
+  when: octopus.tentacleconfigure
+
+- name: Copy Tentacle Remove Script
+  win_template: src=remove_tentacle.j2 dest="{{ octopus.tentacleremoveconfdest }}"
+  when: octopus.tentacleremoveconfig
+  
+- name: Run Tentacle Remove Script
+  raw: '{{ octopus.tentacleremoveconfdest }}'
+  when: octopus.tentacleremoveconfig

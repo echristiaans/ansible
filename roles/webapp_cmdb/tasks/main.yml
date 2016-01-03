@@ -1,0 +1,39 @@
+---
+# tasks file for webapp_cmdb
+
+- name: PHPBrew | Install the prereq packages
+  yum:
+    name:   "{{ item }}"
+    state:  installed
+  with_items: phpbrew_pkgs
+  sudo: yes
+
+ - name: PHPBrew | Symlink PreReq 
+   raw: ln -s /usr/lib64/libssl.so /usr/lib/libssl.so
+   become: yes
+
+ - name: PHPBrew | Symlink PreReq
+   raw: ln -s /usr/lib64/libcrypto.so /usr/lib/libcrypto.so
+   become: yes
+ 
+ - name: PHPBrew | Download 
+   raw: curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
+   become: yes
+
+ - name: PHPBrew | Copy 
+   raw: cp phpbrew /usr/bin
+   become: yes
+
+ - name: PHPBrew | Enable 
+   raw: chmod a+x /usr/bin/phpbrew
+   become: yes
+
+ - name: PHPBrew | Init File for Root
+   template: src=init.j2 dest= /root/.phpbrew/init
+   become: yes
+
+ - name: add a new string at the end of the file
+    lineinfile: dest=/test/test.conf 
+                regexp=''
+                insertafter=EOF
+                line='source ~/.phpbrew/bashrc'

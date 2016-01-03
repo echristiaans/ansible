@@ -1,0 +1,8 @@
+---
+# vars file for webapp_tma
+#developers who get SSH access to these machines
+sshusers:
+  - stefan
+  - gittma
+
+sshgroup: infi_admin

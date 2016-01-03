@@ -1,0 +1,6 @@
+---
+  - name: Download MSSQL 2014 iso
+    win_get_url: 
+     url: 'http://sen-ans-g1/repo/SW_DVD9_SQL_Svr_Standard_Edtn_2014w_SP1_64Bit_English_-2_MLF_X20-29010.iso'
+     dest: 'C:\Scripts\SW_DVD9_SQL_Svr_Standard_Edtn_2014w_SP1_64Bit_English_-2_MLF_X20-29010.iso'
+    when: not stat_mssql_iso.stat.exists

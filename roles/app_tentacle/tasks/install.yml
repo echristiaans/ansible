@@ -1,0 +1,17 @@
+---
+# tasks file for app_tentacle +++
+- name: Stat Octopus Tentacle MSI
+  win_stat: path='{{ octopus.downloaddest }}'
+  register: stat_octcopus_msi
+
+- name: Download Octopus Tentacle
+  win_get_url:
+   url: '{{ octopus.downloadurl }}'
+   dest: '{{ octopus.downloaddest }}'
+  #when: not stat_octopus_msi.stat.exists
+
+- name: Install Octopus
+  win_msi:
+   path: '{{ octopus.downloaddest }}'
+   creates: '"{{ octopus.installdir }}"' 
+   extra_args: 'INSTALLLOCATION="{{ octopus.installdir }}"'

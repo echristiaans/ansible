@@ -1,0 +1,29 @@
+---
+# this playbook adds WWA specific development users
+- name: add aubergine_admin group
+  group: name={{ sshgroup }} state=present
+  become: yes
+
+- name: add aubergine users
+  group: name={{ item.name }} state=present
+  with_items: sshusers
+  become: yes
+
+- name: add aubergineit user tot aubergineit group 
+  user: name={{ item.name }} group={{ sshgroup }}
+  with_items: sshusers
+  become: yes
+
+- name: create key directory
+  action: file path=/home/{{ item.name }}/.ssh/ state=directory
+    owner={{ item.name }} group={{ item.name }} mode=0700
+  with_items: sshusers
+  become: yes
+
+- name: add aubergineit ssh user keys
+  authorized_key: user={{ item.name }} key="{{ item.key }}"
+  with_items:  sshusers
+  become: yes
+  
+- name: edit sudoers add aubergine_admin
+  lineinfile: dest=/etc/sudoers state=present regexp='^%aubergine_admin ALL\=' line='%aubergine_admin ALL=(ALL) NOPASSWD:/bin/su' validate='visudo -cf %s'

@@ -1,0 +1,4 @@
+#add more data
+& "{{ octopus.installdir }}\Tentacle.exe" service --instance "{{ octopus.tentacleinstance }}" --stop --uninstall --console
+& "{{ octopus.installdir }}\Tentacle.exe" delete-instance --instance "{{ octopus.tentacleinstance }}" --console
+remove-item -recurse -force {{ octopus.tentaclehomedir }}

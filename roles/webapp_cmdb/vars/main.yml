@@ -1,0 +1,30 @@
+---
+# vars file for webapp_cmdb
+phpbrew_pkgs:
+  - '@development'
+  - php
+  - php-xml
+  - openssl-devel
+  - libicu-devel
+  - bzip2-devel.x86_64
+  - libmcrypt.x86_64
+  - libmcrypt-devel.x86_64
+  - libxml2-devel
+  - libxslt-devel
+  - re2c
+  - libmhash
+  - lbzip2
+  - httpd-devel
+  - mod_ssl
+  - libcurl-devel
+  - enchant-devel
+  - libpng-devel
+  - libXpm-devel
+  - gmp-devel
+  - libc-client-devel
+  - libc-client
+  - readline-devel
+  - wget
+
+phpbrew_init:
+  - export: "export PHPBREW_ROOT=/opt/phpbrew"

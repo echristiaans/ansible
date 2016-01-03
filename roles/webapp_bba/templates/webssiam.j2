@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  http://go.microsoft.com/fwlink/?LinkId=301880
+  -->
+<configuration>
+  <configSections>
+    <sectionGroup name="applicationSettings" type="System.Configuration.ApplicationSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <section name="IAM.Portal.Web.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+      <section name="IAM.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+    </sectionGroup>
+  </configSections>
+  <appSettings>
+    <add key="webpages:Version" value="3.0.0.0" />
+    <add key="webpages:Enabled" value="false" />
+    <add key="ClientValidationEnabled" value="true" />
+    <add key="UnobtrusiveJavaScriptEnabled" value="true" />
+  </appSettings>
+  <system.web>
+    <compilation targetFramework="4.5" />
+    <httpRuntime targetFramework="4.5" />
+  </system.web>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin.Security.OAuth" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin.Security.Cookies" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin.Security" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" culture="neutral" publicKeyToken="30ad4fe6b2a6aeed" />
+        <bindingRedirect oldVersion="0.0.0.0-7.0.0.0" newVersion="7.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Optimization" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="1.1.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-1.5.2.14234" newVersion="1.5.2.14234" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Helpers" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.WebPages" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.3.0" newVersion="5.2.3.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  
+  <!--ConnectionStrings-->
+  <connectionStrings>
+    <add name="IAMContext" connectionString="Data Source={{ DataSource }};Initial Catalog={{ DatabaseNameIAMss }};Integrated Security=True;"
+      providerName="System.Data.SqlClient"/>
+  </connectionStrings>
+
+  <!--SMTP Settings-->
+  <system.net>
+    <mailSettings>
+      <smtp from="BeeldBelApp &lt;noreply@beeldbelapp.nl&gt;">
+        <network host="{{ MailHost }}"/>
+      </smtp>
+    </mailSettings>
+  </system.net>
+  <applicationSettings>
+    <IAM.Portal.Web.Properties.Settings>
+      <setting name="MaxMindUserId" serializeAs="String">
+        <value>{{ MaxMindUserId }}</value>
+      </setting>
+      <setting name="MaxMindLicenseKey" serializeAs="String">
+        <value>{{ MaxMindLicenseKey }}</value>
+      </setting>
+      <setting name="BasicAuthUsername" serializeAs="String">
+        <value>{{ BasicAuthUsername }}</value>
+      </setting>
+      <setting name="BasicAuthPassword" serializeAs="String">
+        <value>{{ BasicAuthPassword }}</value>
+      </setting>
+      <setting name="PrivacyStatementBaseUrl" serializeAs="String">
+        <value>{{ PrivacyStatementBaseUrl }}</value>
+      </setting>
+      <setting name="PrivacyStatementVersion" serializeAs="String">
+        <value>{{ PrivacyStatementVersion }}</value>
+      </setting>
+      <setting name="SemiStaticCacheTimeInSeconds" serializeAs="String">
+        <value>28800</value>
+      </setting>
+    </IAM.Portal.Web.Properties.Settings>
+    <IAM.Properties.Settings>
+      <setting name="SCIMEndpointUser" serializeAs="String">
+        <value>{{ SCIMEndpointUser }}</value>
+      </setting>
+      <setting name="SCIMEndpointPassword" serializeAs="String">
+        <value>{{ SCIMEndpointPassword }}</value>
+      </setting>
+      <setting name="SCIMEndpointUrl" serializeAs="String">
+        <value>{{ SCIMEndpointUrl }}</value>
+      </setting>
+      <setting name="AuthenticatieEndpointUser" serializeAs="String">
+        <value>{{ AuthenticatieEndpointUser }}</value>
+      </setting>
+      <setting name="AuthenticatieEndpointPassword" serializeAs="String">
+        <value>{{ AuthenticatieEndpointPassword }}</value>
+      </setting>
+      <setting name="AuthenticatieEndpointUrl" serializeAs="String">
+        <value>{{ AuthenticatieEndpointUrl }}</value>
+      </setting>
+      <setting name="CertificateResourceVersion" serializeAs="String">
+        <value>{{ CertificateResourceVersion }}</value>
+      </setting>
+      <setting name="CertificatePassword" serializeAs="String">
+        <value>{{ CertificatePassword }}</value>
+      </setting>
+    </IAM.Properties.Settings>
+  </applicationSettings>
+  <system.webServer>
+    <staticContent>
+      <clientCache cacheControlCustom="public" cacheControlMaxAge="00:05:00" cacheControlMode="UseMaxAge" />
+    </staticContent>
+    <modules>
+      <add name="BasicAuthHttpModule" type="IAM.Portal.Web.Helpers.BasicAuthHttpModule" />
+    </modules>
+    <handlers>
+        <remove name="ExtensionlessUrlHandler-Integrated-4.0" />
+        <remove name="OPTIONSVerbHandler" />
+        <remove name="TRACEVerbHandler" />
+        <add name="ExtensionlessUrlHandler-Integrated-4.0" path="*." verb="*" type="System.Web.Handlers.TransferRequestHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+    </handlers>
+  </system.webServer>
+</configuration>
