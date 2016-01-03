@@ -55,6 +55,7 @@
 - name: PHPBrew | Stat Updates
   stat: path=/root/.phpbrew/php-releases.json
   register: updates_st
+  become: yes
 
 - name: PHPBrew | Update 
   raw: phpbrew update --old
