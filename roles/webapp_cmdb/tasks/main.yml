@@ -70,8 +70,10 @@
   lineinfile: dest=/root/.bashrc line='source ~/.phpbrew/bashrc'
   become: yes
 
-- name: PHPBrew | Install version 
-  raw: phpbrew install --old 5.3.23
-  become: yes
+#- name: PHPBrew | Install version 
+#  raw: phpbrew install --old 5.3.23
+#  become: yes
 
+- name: PHPBrew | Install with script
+  script: /root/installphp.sh
 
