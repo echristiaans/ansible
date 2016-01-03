@@ -25,6 +25,3 @@ phpbrew_pkgs:
   - libc-client
   - readline-devel
   - wget
-
-phpbrew_init:
-  - export: "export PHPBREW_ROOT=/opt/phpbrew"
