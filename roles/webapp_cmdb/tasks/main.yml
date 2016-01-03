@@ -74,6 +74,10 @@
 #  raw: phpbrew install --old 5.3.23
 #  become: yes
 
+- name: PHPBrew | Copy install script
+  copy: src=installphp.sh dest=/root/installphp.sh owner=foo group=foo mode=0644\
+  become: yes
+
 - name: PHPBrew | Install with script
   script: /root/installphp.sh
-
+  become: yes
