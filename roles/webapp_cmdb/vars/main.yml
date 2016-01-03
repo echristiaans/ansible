@@ -11,7 +11,7 @@ phpbrew_pkgs:
   - libmcrypt-devel.x86_64
   - libxml2-devel
   - libxslt-devel
-  - re2c
+  - re2.x86_64
   - libmhash
   - lbzip2
   - httpd-devel
