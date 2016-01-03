@@ -53,7 +53,7 @@
   become: yes
 
 - name: add a new string at the end of the file
-  lineinfile: dest=/test/test.conf 
+  lineinfile: dest=/root/.bashrc 
               regexp=''
               insertafter=EOF
               line='source ~/.phpbrew/bashrc'
