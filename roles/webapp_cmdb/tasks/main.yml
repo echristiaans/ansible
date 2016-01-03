@@ -71,7 +71,7 @@
   become: yes
 
 - name: PHPBrew | Install version 
-  raw: phpbrew install --old {{ phpbrew_init.version }}
+  raw: phpbrew install --old 5.3.23
   become: yes
 
 
