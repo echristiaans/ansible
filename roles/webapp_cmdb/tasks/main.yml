@@ -56,29 +56,29 @@
   template: src=init.j2 dest=/root/.phpbrew/init
   become: yes
 
-- name: PHPBrew | Source PHPBrew bashrc
-  raw: source ~/.phpbrew/bashrc
+- name: PHPBrew | Add PHPBrew.rc to .bashrc
+  lineinfile: dest=/root/.bashrc line='source ~/.phpbrew/bashrc'
   become: yes
 
-#- name: PHPBrew | Source .bashrc
-#  raw: source /root/.bashrc
-#  become: yes
+- name: PHPBrew | Source .bashrc
+  raw: source /root/.bashrc
+  become: yes
 
 - name: PHPBrew | Install file
   template: src=installphp.j2 dest=/root/installphp.sh owner=root group=root mode="u+rwx,g+rx,o+rx"
   become: yes
 
-- name: PHPBrew | Stat php version
-  stat: path=/opt/phpbrew/php/php-5.3.23/bin
-  register: phpver_st
-  become: yes
+#- name: PHPBrew | Stat php version
+#  stat: path=/opt/phpbrew/php/php-5.3.23/bin
+#  register: phpver_st
+#  become: yes
 
-- name: PHPBrew | Install with script
-  raw: /root/installphp.sh
-  become: yes
-  when: not phpver_st.stat.exists
+#- name: PHPBrew | Install with script
+#  raw: /root/installphp.sh
+#  become: yes
+#  when: not phpver_st.stat.exists
 
-- name: PHPBrew | Wait for install script to finish
-  wait_for: path=/root/installphp.log search_regex=completed
-  become: yes
-  when: not phpver_st.stat.exists
+#- name: PHPBrew | Wait for install script to finish
+#  wait_for: path=/root/installphp.log search_regex=completed
+#  become: yes
+#  when: not phpver_st.stat.exists
