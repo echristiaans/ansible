@@ -83,5 +83,5 @@
   become: yes
 
 - name: PHPBrew | Wait for install script to finish
-  wait_for: path=/root/phpinstall.log search_regex=completed
+  wait_for: path=/root/installphp.log search_regex=completed
   become: yes
