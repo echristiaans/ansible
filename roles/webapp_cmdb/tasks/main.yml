@@ -70,18 +70,14 @@
   lineinfile: dest=/root/.bashrc line='source ~/.phpbrew/bashrc'
   become: yes
 
-#- name: PHPBrew | Install version 
-#  raw: phpbrew install --old 5.3.23
-#  become: yes
-
 - name: PHPBrew | Install file
   template: src=installphp.j2 dest=/root/installphp.sh owner=root group=root mode="u+rwx,g+rx,o+rx"
   become: yes
 
-- name: PHPBrew | Install with script
-  raw: /root/installphp.sh
-  become: yes
+#- name: PHPBrew | Install with script
+#  raw: /root/installphp.sh
+#  become: yes
 
-- name: PHPBrew | Wait for install script to finish
-  wait_for: path=/root/installphp.log search_regex=completed
-  become: yes
+#- name: PHPBrew | Wait for install script to finish
+#  wait_for: path=/root/installphp.log search_regex=completed
+#  become: yes
