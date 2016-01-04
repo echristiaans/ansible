@@ -52,10 +52,10 @@
   raw: phpbrew init
   become: yes
 
-- name: PHPBrew | Stat Updates
-  stat: path=/root/.phpbrew/php-releases.json
-  register: updates_st
-  become: yes
+#- name: PHPBrew | Stat Updates
+#  stat: path=/root/.phpbrew/php-releases.json
+#  register: updates_st
+#  become: yes
 
 - name: PHPBrew | Init File for Root
   template: src=init.j2 dest=/root/.phpbrew/init
@@ -69,10 +69,10 @@
   raw: source /root/.bashrc
   become: yes
 
-- name: PHPBrew | Update 
-  raw: phpbrew update --old
-  become: yes
-  #when: not updates_st.stat.exists
+#- name: PHPBrew | Update 
+#  raw: phpbrew update --old
+#  become: yes
+#  #when: not updates_st.stat.exists
 
 - name: PHPBrew | Install file
   template: src=installphp.j2 dest=/root/installphp.sh owner=root group=root mode="u+rwx,g+rx,o+rx"
