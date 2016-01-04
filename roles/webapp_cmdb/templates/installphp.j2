@@ -1,5 +1,6 @@
 #{{ ansible_managed }}
 #installphp.sh
 #/bin/bash
+phpbrew update --old
 phpbrew install --old {{ phpbrew_init.version }}
 echo "completed" > /root/installphp.log
