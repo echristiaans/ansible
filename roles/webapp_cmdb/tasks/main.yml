@@ -81,3 +81,7 @@
 - name: PHPBrew | Install with script
   raw: /root/installphp.sh
   become: yes
+
+- name: PHPBrew | Wait for install script to finish
+  wait_for: path=/root/phpinstall.log search_regex=completed
+  become: yes
