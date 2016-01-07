@@ -16,6 +16,8 @@ sshusers:
   - wniels
   - toml
   - echristi
+  - sandries
+  - noverbee
   
 env:
  RUNLEVEL: 1
