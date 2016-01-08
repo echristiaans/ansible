@@ -26,3 +26,4 @@
 
 - name: edit sudoers add infi_admin
   lineinfile: dest=/etc/sudoers state=present regexp='^%infi_admin ALL\=' line='%infi_admin ALL=(ALL) NOPASSWD:/bin/su' validate='visudo -cf %s'
+  become: yes
