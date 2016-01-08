@@ -1,0 +1,20 @@
+---
+
+- name: Repo | Add Repo (1/2)
+  raw: rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  become: yes
+
+- name: Repo | Add Repo (2/2)
+  raw: rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+  become: yes
+
+- name: PHP 55 | Replace default with php55 
+  raw: yum replace php-common --replace-with=php55w-common
+  become: yes
+
+- name: PHP Mod's | Install PHP Mod's
+  yum:
+    name:   "{{ item }}"
+    state:  installed
+  with_items: php55_pkgs
+  sudo: yes
