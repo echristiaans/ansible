@@ -1,43 +1,38 @@
-Role Name
-=========
+Ik heb onderstaande stappen uitgevoerd om alles aan de praat te krijgen:
 
-TODO
+1. /yum install nano/ #guiltypleasure
+2a. chmod -R 777 /var/www/html/sites/default/files
+/    Kan eventueel ook chown <apachegebruiker> -R
+/var/www/html/sites/default/files worden/
+2b. chcon -R -t httpd_sys_rw_content_t /var/www/html/sites/default/files/
+3. chown -R steven:steven /var/www/html/
+4. php.ini: short_open_tag = On
+5. yum install php-pecl-apcu
+6. yum install memcached ; service memcached start
+7. yum install mysql
+8. httpd.conf AllowOverride All in /var/www/html sectie
+9. yum install php-soap
+10. yum install php-memcache
+11. setsebool -P httpd_can_network_memcache 1
+12. apachectl gracefull
 
-Requirements
-------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Meeste commando's spreken voor zich denk ik. Zo niet hoor ik het wel.
 
-Role Variables
---------------
+Verder zou ik jou willen vragen om:
+1. *.kbotablet.nl <http://kbotablet.nl> en kbotablet.nl
+<http://kbotablet.nl> toe te staan
+2. Te checken of memcached start als de server reboot
+3. Hierop te reageren:
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+    [19-11-15 14:18:19] Steven: Is het tegen jullie beveiligingsbeleid
+    om dit:
+    %abergineit_admin ALL=(ALL) NOPASSWD:/bin/su 
 
-Dependencies
-------------
+    te veranderen naar
+    %abergineit_admin ALL=(ALL) NOPASSWD:ALL
+    [19-11-15 14:18:39] Steven: Nu moet ik telkens root worden voor elk
+    command, en is het risico dat ik dat onnodig lang blijf.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
-Example Playbook
-----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
-
-#optional for IMAP
-yum install wget
-wget http://www.rpmseek.com/rpm-dl/uw-imap-2007e-8.src.html?hl=com&cs=IMAP:PN:0:0:0:0:120:9807401
-mv uw-imap-2007e-8.src.html?hl=com uw-imap-2007e-8.src.rpm
