@@ -1,0 +1,13 @@
+---
+  - name: Install bacula linux client
+    yum: name=bacula-client state=present
+    become: yes
+
+  - name: Bacula client configuration
+    template: src=bacula-fd-lin.conf.j2 dest=/etc/bacula/bacula-fd.conf
+    notify: restart bacula-fd
+    become: yes
+
+  - name: Bacula client enabled (and running)
+    service: name=bacula-fd enabled=yes state=started
+    become: yes

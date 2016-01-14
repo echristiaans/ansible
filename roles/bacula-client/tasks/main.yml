@@ -1,0 +1,7 @@
+---
+  - include: bacula-fd-linux.yml
+    when: ansible_system == "Linux"
+
+#  - include: bacula-fd-windows.yml
+#    when: ansible_os_family == "Windows"
+

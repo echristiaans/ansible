@@ -1,0 +1,21 @@
+#  For Bacula release 5.2.13 (19 February 2013) -- redhat (Core)
+
+Director {
+  Name = bacula-dir
+  Password = "{{ bacula_client_password }}"
+}
+
+FileDaemon { 
+  Name = {{ ansible_hostname }} 
+  FDAddress = {{ ansible_default_ipv4.address }}
+  FDport = 9102            
+  WorkingDirectory = /var/spool/bacula
+  Pid Directory = /var/run
+  Maximum Concurrent Jobs = 20
+}
+
+Messages {
+  Name = Standard
+  director = {{ bacula_server_name }}-dir = all, !skipped, !restored
+}
+

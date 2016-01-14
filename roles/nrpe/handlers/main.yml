@@ -1,0 +1,4 @@
+---
+- name: restart nrpe
+  action: service enabled=yes name=nrpe state=restarted
+  become: yes

@@ -1,0 +1,12 @@
+---
+  - name: Confirm windows install file present
+    win_stat: path=C:\windows\temp\bacula_win_64.zip
+    register: installzip_present   
+
+  - name: Copy bacula windows client
+    win_copy: src=bacula_win_64.zip dest=C:\windows\temp\bacula_win_64.zip
+    when: not installzip_present.stat.exists
+
+  - name: Extract windows bacula install files
+    win_unzip: src=C:\windows\temp\bacula_win_64.zip dest=C:\windows\temp\bacula_win_64 recurse=yes rm=false
+    when: installzip_present.stat.exists

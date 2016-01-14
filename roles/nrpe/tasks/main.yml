@@ -1,0 +1,27 @@
+---
+- name: Install nrpe nrpe
+  yum: name=nrpe state=present
+  become: yes
+
+- name: Create user nagios
+  user: name=nagios group=nagios
+  become: yes
+
+- name: Create group nagios
+  group: name=nagios state=present
+  become: yes
+
+- name: NRPE config file
+  template: src=nrpe.cfg.j2
+            dest=/etc/nagios/nrpe.cfg
+            owner=nagios
+            group=nagios
+            mode=0644
+  notify:
+    - restart nrpe
+  become: yes
+
+- name: Install nagios plugins
+  yum: name=nagios-plugins-all state=present
+  become: yes
+
