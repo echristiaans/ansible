@@ -3,9 +3,10 @@
   service:
     name=nagios
     state=reloaded
+  become: yes
 
 - name: reload httpd
   service:
     name=httpd
     state=reloaded
-
+  become: yes
