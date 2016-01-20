@@ -1,38 +1,37 @@
-Role Name
-=========
 
-A brief description of the role goes here.
+	
 
-Requirements
-------------
+This is due to a security feature known as LoopbackCheck.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Error message when you try to access a server locally by using its FQDN or its CNAME alias after you install Windows Server 2003 Service Pack 1: "Access denied" or "No network provider accepted the given network path"
+http://support.microsoft.com/kb/926642
 
-Role Variables
---------------
+There are two resolutions:
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Method 1 (recommended): Create the Local Security Authority host names that can be referenced in an NTLM authentication request. To do this, follow these steps for all the nodes on the client computer:
 
-Dependencies
-------------
+    Click Start, click Run, type regedit, and then click OK.
+    Locate and then click the following registry subkey: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+    Right-click MSV1_0, point to New, and then click Multi-String Value.
+    In the Name column, type BackConnectionHostNames, and then press ENTER.
+    Right-click BackConnectionHostNames, and then click Modify.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+    In the Value data box, type the CNAME or the DNS alias, that is used for the local shares on the computer, and then click OK.
 
-Example Playbook
-----------------
+    Note: Type each host name on a separate line.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+    Note: If the BackConnectionHostNames registry entry exists as a REG_DWORD type, you have to delete the BackConnectionHostNames registry entry.
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+    Exit Registry Editor, and then restart the computer.
 
-License
--------
+Method 2: Disable the authentication loopback check by setting the DisableLoopbackCheck registry entry in theHKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa registry subkey to 1. To set the DisableLoopbackCheck registry entry to 1, follow these steps on the client computer:
 
-BSD
+    Click Start, click Run, type regedit, and then click OK.
+    Locate and then click the following registry subkey: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa
+    Right-click Lsa, point to New, and then click DWORD Value.
+    Type DisableLoopbackCheck, and then press ENTER.
+    Right-click DisableLoopbackCheck, and then click Modify.
+    In the Value data box, type 1, and then click OK.
+    Exit Registry Editor.
+    Restart the computer.
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
