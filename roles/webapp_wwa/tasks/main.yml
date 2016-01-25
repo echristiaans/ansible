@@ -1,3 +1,16 @@
 ---
 # tasks file for webapp_wwa
 - include: users.yml
+
+- name: setsebool -P httpd_can_network_connect_db 1
+  raw: setsebool -P httpd_can_network_connect_db 1
+  become: yes
+
+- name: setsebool -P httpd_can_network_memcache 1
+  raw: setsebool -P httpd_can_network_memcache 1
+  become: yes
+
+- name: Install the required WWA modules
+  yum: name={{ item }} state=present 
+  with_items: yum_pkgs
+  become: yes
