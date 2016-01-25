@@ -14,3 +14,10 @@ sshusers:
     key: "{{ lookup('file', 'hans_relay_rsa_id.pub') }}"
 
 sshgroup: abergineit_admin
+
+yum_pkgs:
+  - mariadb
+  - nano
+  - php-pecl-apcu
+  - memcached
+  - php-soap
