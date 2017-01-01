@@ -1,10 +1,7 @@
-#{{ ansible_managed }}
+{{ ansible_managed }}
 
 {% if resolv_nameservers is defined %}
 {% for nameserver in resolv_nameservers %}
 nameserver {{ nameserver }}
 {% endfor %}
-{% endif %}
-{% if resolv_search is defined %}
-search {{ resolv_search }}
 {% endif %}

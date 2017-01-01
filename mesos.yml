@@ -1,0 +1,12 @@
+---
+  - hosts: mesos-master
+    roles:
+      - role: common-lin
+      - role: mesos
+
+  - hosts: mesos-slave
+    roles:
+      - role: common-lin
+      - role: mesos
+
+    #vars:

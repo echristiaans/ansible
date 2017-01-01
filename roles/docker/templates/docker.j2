@@ -1,0 +1,1 @@
+OPTIONS="--tls=true --tlscert=/root/{{ ansible_nodename }}-srvcert.pem --tlskey=/root/{{ ansible_nodename }}-srvkey.pem --selinux-enabled=true --tlsverify=false -H tcp://{{ ansible_default_ipv4.address }}:2376"

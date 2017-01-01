@@ -1,0 +1,85 @@
+---
+- name: Apply latest updates before anything else
+  yum: name=* state=latest update_cache=yes exclude=libdb exclude=cyrus-sasl
+  become: yes
+  when: "ansible_distribution == 'CentOS'"
+
+- name: Install Mesos Repo on CentOS7
+  yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
+  become: yes
+  when: "ansible_distribution == 'CentOS' and ansible_distribution_major_version not in ['7']"
+
+- name: Install Mesos Repo on CentOS6
+  yum: name=http://repos.mesosphere.com/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm state=present
+  become: yes
+  when: "ansible_distribution == 'CentOS' and ansible_distribution_major_version not in ['6']"
+
+- name: Install Mesos 
+  yum: name=mesos state=latest update_cache=yes
+  become: yes
+
+- name: install Marathon
+  yum: name=marathon state=latest update_cache=yes
+  become: yes
+
+- name: check if Mesos conf directory exists
+  stat: path=/etc/mesos
+  register: mesosconfdir
+
+- name: copy Mesos zk file
+  template:
+    src: mesos_zk.j2
+    dest: /etc/mesos/zk
+    owner: root
+    group: root
+  become: yes
+  when: mesosconfdir.stat.exists
+
+- name: check if Mesos Master directory exists
+  stat: path=/etc/mesos-master
+  register: mesosmasterdir
+
+- name: copy Mesos quorum file
+  template:
+    src: mesos_quorum.j2
+    dest: /etc/mesos-master/quorum
+    owner: root
+    group: root
+  become: yes
+  when: mesosmasterdir.stat.exists
+
+- name: stop mesos-slave service on masters
+  service: name=mesos-slave state=stopped enabled=no
+  when: inventory_hostname in groups['mesos-master']
+  register: command_result
+  become: yes
+  failed_when: "command_result|failed and 'systemd could not find the requested service' not in command_result.msg"
+
+- name: Disable Zookeeper service on mesos slaves
+  service: name=zookeeper state=stopped enabled=no
+  become: yes
+  when: inventory_hostname in groups['mesos-slave']
+  register: command_result
+  failed_when: "command_result|failed and 'systemd could not find the requested service' not in command_result.msg"
+
+- name: stop mesos-master service on slaves
+  service: name=mesos-master state=stopped enabled=no
+  become: yes
+  when: inventory_hostname in groups['mesos-slave']
+  register: command_result
+  failed_when: "command_result|failed and 'systemd could not find the requested service' not in command_result.msg"
+
+- name: start mesos-master service on masters
+  service: name=mesos-master state=started enabled=yes
+  become: yes
+  when: inventory_hostname in groups['mesos-master']
+  register: command_result
+  failed_when: "command_result|failed and 'systemd could not find the requested service' not in command_result.msg"
+
+- name: start mesos-slave service on slaves
+  service: name=mesos-slave state=started enabled=yes
+  become: yes
+  when: inventory_hostname in groups['mesos-slave']
+  register: command_result
+  failed_when: "command_result|failed and 'systemd could not find the requested service' not in command_result.msg"
+

@@ -1,0 +1,20 @@
+---
+#- name: Apply latest updates before anything else
+#  yum: name=* state=latest update_cache=yes 
+#  become: yes
+#  when: "ansible_distribution == 'CentOS'"
+
+- name: Install required packages for KVM
+  yum: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - qemu-kvm
+    - python-virtinst
+    - libvirt
+    - libvirt-python
+    - virt-install
+    - virt-manager
+    - libguestfs-tools
+    - bridge-utils
+    - wget
+  become: yes
+

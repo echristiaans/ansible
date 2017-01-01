@@ -1,0 +1,6 @@
+---
+  - hosts: zookeeper
+    roles:
+      - role: zookeeper
+
+    #vars:

@@ -6,18 +6,7 @@ snmpv3privpass: asecurephrase
 
 #users who get SSH access to these machines
 sshusers:
-  - bvdlange
-  - jwensveen
-  - mkleefma
-  - mvdberg
-  - pgorel
-  - rakker
-  - ronestin
-  - wniels
-  - toml
   - echristi
-  - sandries
-  - noverbee
   
 env:
  RUNLEVEL: 1

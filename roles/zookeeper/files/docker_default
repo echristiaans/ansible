@@ -1,0 +1,3 @@
+DOCKER_OPTS=" --tls=true --tlscert=/var/docker/server.pem --tlskey=/var/docker/serverkey.pem --selinux-enabled=true
+
+

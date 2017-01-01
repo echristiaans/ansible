@@ -1,0 +1,35 @@
+---
+- name: Install Zookeeper Repo on CentOS6
+  yum: name=http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm state=present
+  become: yes
+  when: "ansible_distribution == 'CentOS' and ansible_distribution_major_version not in ['6']"
+
+- name: install Zookeeper
+  yum: name=zookeeper
+  become: yes
+
+- name: check if Zookeeper var directory exists
+  stat: path=/var/lib/zookeeper
+  register: zkvardir
+
+- name: check if Zookeeper conf directory exists
+  stat: path=/etc/zookeeper/conf
+  register: zkconfdir
+
+- name: copy zookeeper id file
+  template:
+    src: zk_id.j2
+    dest: /var/lib/zookeeper/myid
+    owner: root
+    group: root
+  become: yes
+  when: zkvardir.stat.exists
+
+- name: copy zookeeper config file
+  template:
+    src: zoo.cfg.j2
+    dest: /etc/zookeeper/conf/zoo.cfg
+    owner: root
+    group: root
+  become: yes
+  when: zkconfdir.stat.exists

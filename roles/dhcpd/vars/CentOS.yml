@@ -1,0 +1,39 @@
+# roles/dhcp/vars/RedHat.yml
+---
+
+dhcp_packages:
+  - dhcp
+
+dhcp_config: /etc/dhcp/dhcpd.conf
+
+dhcp_service: dhcpd
+
+dhcp_global_domain_name_servers:
+  - 8.8.8.8
+
+dhcp_global_default_lease_time: 86040
+
+dhcp_subnets:
+  - ip: 10.12.10.0
+    netmask: 255.255.255.0
+    domain_name_servers:
+      - 8.8.8.8
+    range_begin: 10.12.10.50
+    range_end: 10.12.10.99
+    routers: 10.12.10.1
+
+  - ip: 10.12.11.0
+    netmask: 255.255.255.0
+    domain_name_servers:
+      - 8.8.8.8
+    range_begin: 10.12.11.100
+    range_end: 10.12.11.149
+    routers: 10.12.11.1
+
+  - ip: 10.12.12.0
+    netmask: 255.255.255.0
+    domain_name_servers:
+      - 8.8.8.8
+    range_begin: 10.12.12.50
+    range_end: 10.12.12.99
+    routers: 10.12.12.1

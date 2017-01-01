@@ -1,0 +1,7 @@
+---
+  - hosts: docker
+    roles:
+      - role: common-lin
+      - role: docker
+
+    #vars:

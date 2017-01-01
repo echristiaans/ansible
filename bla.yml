@@ -1,0 +1,7 @@
+---
+  - hosts: sen-dck-t1
+    roles:
+      - role: common-lin
+      - role: docker
+
+    #vars:

@@ -1,0 +1,12 @@
+---
+- name: start docker
+  service: name=docker state=started enabled=yes
+  become: yes
+
+- name: restart docker
+  service: name=docker state=restarted
+  become: yes
+
+- name: restart systemd
+  command: systemctl daemon-reload
+  become: yes

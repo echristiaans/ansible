@@ -1,4 +1,4 @@
 ---
 - name: epel | install epel package
-  yum: state=present pkg=epel-release
+  yum: state=present pkg=epel-release update_cache=yes
   become: yes

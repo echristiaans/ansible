@@ -1,6 +1,5 @@
 ---
 - include: check-variables.yml
-
 - include: resolv.yml
 - include: yum_repo.yml
 - include: ntp-CentOS.yml

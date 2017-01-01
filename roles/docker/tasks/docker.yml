@@ -1,0 +1,39 @@
+---
+- include: certs.yml
+
+- name: config Docker repo
+  copy: src=docker.repo dest=/etc/yum.repos.d/docker.repo
+  become: yes
+
+- name: Install Docker Engine
+  yum: >
+    pkg={{ item }}
+    state=latest
+    update_cache=yes
+  with_items:
+    - docker-engine
+  become: yes
+
+- name: create systemd drop-in directory for service tweaking
+  file: path=/etc/systemd/system/docker.service.d state=directory
+  become: yes
+
+- name: copy docker systemd drop-in
+  copy: src=docker.service dest=/etc/systemd/system/docker.service.d/docker.service.conf owner=root group=root 
+  become: yes
+  notify: restart systemd
+
+- name: copy docker daemon startup file
+  template:
+    src: docker.j2
+    dest: /etc/sysconfig/docker
+    owner: root
+    group: root
+    mode: 0440
+  become: yes
+  notify: restart docker
+  ignore_errors: yes
+
+- name: start docker
+  service: name=docker state=started enabled=yes
+  become: yes

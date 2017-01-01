@@ -1,11 +1,17 @@
 ---
+- name: check if ntp installed
+  stat: path=/etc/init.d/ntp
+  register: service_ntp_status
+
 - name: ntp | stop ntp server
   service: name=ntp state=stopped
   become: yes
+  when: service_ntp_status.stat.exists
 
 - name: ntp | disable ntp
   service: name=ntp enabled=no
   become: yes
+  when: service_ntp_status.stat.exists
 
 - name: ntp | set timezone
   file:

@@ -1,0 +1,68 @@
+---
+- name: generate CA key
+  command: openssl genrsa -out /root/cakey.pem 4096 creates=/root/cakey.pem
+  become: yes
+
+- name: generate CA cert
+  command: openssl req -key /root/cakey.pem -new -days 3650 -x509 -subj /C=NL/ST=Utrecht/L=Nieuwegein/O=Sentia/CN={{ ansible_nodename }} -out /root/cacert.pem creates=/root/cacert.pem
+  become: yes
+
+- name: generate Server key
+  command: openssl genrsa -out /root/{{ ansible_nodename }}-srvkey.pem 4096 creates=/root/{{ ansible_nodename }}-srvkey.pem
+  become: yes
+
+- name: generate server cert signing request
+  command: openssl req -subj /CN={{ ansible_nodename }} -sha256 -new -key /root/{{ ansible_nodename }}-srvkey.pem -out /root/{{ ansible_nodename }}-srv.csr creates=/root/{{ ansible_nodename }}-srv.csr
+  become: yes
+
+- name: copy subjectAltName file
+  template:
+    src: altName.cnf.j2
+    dest: /root/altName.cnf
+    owner: root
+    group: root
+  become: yes
+
+- name: sign the server cert request
+  command: openssl x509 -req -days 1825 -sha256 -in /root/{{ ansible_nodename }}-srv.csr -CA /root/cacert.pem -CAkey /root/cakey.pem -CAcreateserial -out /root/{{ ansible_nodename }}-srvcert.pem -extfile /root/altName.cnf creates=/root/{{ ansible_nodename }}-srvcert.pem
+  become: yes
+
+- name: create client key 
+  command: openssl genrsa -out /root/{{ ansible_nodename }}-cltkey.pem 4096 creates=/root/{{ ansible_nodename }}-cltkey.pem
+  become: yes
+
+- name: generate client cert signing request
+  command: openssl req -subj /CN={{ ansible_nodename }} -sha256 -new -key /root/{{ ansible_nodename }}-cltkey.pem -out /root/{{ ansible_nodename }}-clt.csr creates=/root/{{ ansible_nodename }}-clt.csr
+  become: yes
+
+- name: copy extended key usage file
+  copy: src=extendedKeyUsage.cnf dest=/root/extendedKeyUsage.cnf
+  become: yes
+
+- name: sign the client cert request
+  command: openssl x509 -req -days 1825 -sha256 -in /root/{{ ansible_nodename }}-clt.csr -CA /root/cacert.pem -CAkey /root/cakey.pem -CAcreateserial -out /root/{{ ansible_nodename }}-cltcert.pem -extfile /root/extendedKeyUsage.cnf creates=/root/{{ ansible_nodename }}-cltcert.pem
+  become: yes
+
+- name: cleanup signing requests
+  file: path="{{ item }}" state=absent
+  with_items:
+    - /root/{{ ansible_nodename }}-srv.csr removes=/root/{{ ansible_nodename }}-srv.csr
+    - /root/{{ ansible_nodename }}-clt.csr removes=/root/{{ ansible_nodename }}-clt.csr
+  become: yes
+
+- name: make keys readable only be us
+  file: path="{{ item }}" mode=0400
+  with_items:
+    - /root/cakey.pem
+    - /root/{{ ansible_nodename }}-srvkey.pem
+    - /root/{{ ansible_nodename }}-cltkey.pem
+  become: yes
+
+- name: make certs not writable
+  file: path="{{ item }}" mode=0444
+  with_items:
+    - /root/cacert.pem
+    - /root/{{ ansible_nodename }}-srvcert.pem
+    - /root/{{ ansible_nodename }}-cltcert.pem
+  become: yes
+

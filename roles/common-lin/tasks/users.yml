@@ -1,13 +1,13 @@
 ---
 - group: name=git state=present
   become: yes
-- group: name=charlie_admin state=present
+- group: name=mcits_admin state=present
   become: yes
 - group: name={{ item }} state=present
   with_items: sshusers
   become: yes
 
-- user: name={{ item }} group=charlie_admin
+- user: name={{ item }} group=mcits_admin
   with_items: sshusers
   become: yes
 
@@ -23,7 +23,7 @@
   become: yes
 
 - name: edit sudoers
-  lineinfile: dest=/etc/sudoers state=present regexp='^%charlie_admin ALL\=' line='%charlie_admin ALL=(ALL) NOPASSWD:/bin/su' validate='visudo -cf %s'
+  lineinfile: dest=/etc/sudoers state=present regexp='^%charlie_admin ALL\=' line='%mcits_admin ALL=(ALL) NOPASSWD:/bin/su' validate='visudo -cf %s'
   become: yes
 
 - name: edit sudoers for ansible user

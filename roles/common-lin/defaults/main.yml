@@ -4,10 +4,10 @@ ntp_timezone: Europe/Amsterdam
 ntp_servers: 
   - nl.pool.org
 
-resolv_search: example.com
+resolv_search: sentia.net
 resolv_nameservers:
-  - 6.6.6.6
-  - 8.8.8.8
+  - 62.179.104.196
+  - 213.46.228.196
 
 nrpe_allowed_hosts: "10.1.2.3,10.1.0.1"
 

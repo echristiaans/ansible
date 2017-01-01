@@ -1,0 +1,8 @@
+---
+  - hosts: kvm
+    roles:
+#      - role: common-lin
+      - role: kvm
+#       - role: dhcpd
+
+    #vars:

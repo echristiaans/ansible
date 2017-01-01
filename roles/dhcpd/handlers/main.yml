@@ -1,0 +1,13 @@
+# roles/dhcp/handlers/main.yml
+---
+
+- name: restart dhcp
+  service:
+    name: "{{ dhcp_service }}"
+    state: restarted
+  become: true
+
+- name: restart apparmor
+  service:
+    name: apparmor
+    state: restarted

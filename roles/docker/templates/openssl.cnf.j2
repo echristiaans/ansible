@@ -1,0 +1,75 @@
+#
+# OpenSSL configuration file.
+#
+ 
+# Establish working directory.
+ 
+dir					= .
+ 
+[ ca ]
+default_ca				= CA_default
+ 
+[ CA_default ]
+serial					= $dir/serial
+database				= $dir/certindex.txt
+new_certs_dir				= $dir/certs
+certificate				= $dir/cacert.pem
+private_key				= $dir/private/cakey.pem
+default_days				= 3650
+default_md				= sha256
+preserve				= no
+email_in_dn				= no
+nameopt					= default_ca
+certopt					= default_ca
+policy					= policy_match
+ 
+[ policy_match ]
+countryName				= NL
+stateOrProvinceName			= Utrecht
+organizationName			= Sentia
+organizationalUnitName			= Product Development
+commonName				= {{ ansible_node_name }}
+emailAddress				= erik.christiaans@sentia.com
+ 
+[ req ]
+default_bits				= 4096			# Size of keys
+default_keyfile				= key.pem		# name of generated keys
+default_md				= sha256		# message digest algorithm
+string_mask				= nombstr		# permitted characters
+distinguished_name			= req_distinguished_name
+req_extensions				= v3_req
+ 
+[ req_distinguished_name ]
+# Variable name				Prompt string
+#-------------------------	  ----------------------------------
+0.organizationName			= Sentia
+organizationalUnitName			= Product Development
+emailAddress				= erik.christiaans@sentia.com
+emailAddress_max			= 40
+localityName				= Nieuwegein
+stateOrProvinceName			= Utrecht
+countryName				= NL
+countryName_min				= 2
+countryName_max				= 2
+commonName				= {{ ansible_node_name }}
+commonName_max				= 64
+ 
+# Default values for the above, for consistency and less typing.
+# Variable name				Value
+#------------------------	  ------------------------------
+0.organizationName                      = Sentia
+organizationalUnitName                  = Product Development
+emailAddress                            = erik.christiaans@sentia.com
+localityName                            = Nieuwegein
+stateOrProvinceName                     = Utrecht
+countryName                             = NL
+commonName                              = {{ ansible_node_name }}
+
+[ v3_ca ]
+basicConstraints			= CA:TRUE
+subjectKeyIdentifier			= hash
+authorityKeyIdentifier			= keyid:always,issuer:always
+ 
+[ v3_req ]
+basicConstraints			= CA:FALSE
+subjectKeyIdentifier			= hash
