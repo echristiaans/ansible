@@ -1,0 +1,26 @@
+---
+add_monitoring: true
+zabbix_templates:
+  - "Template Sentia App Ansible Node"
+zabbix_groups:
+  - "Ansible Nodes"
+is_FirstDC: false # true when installing very first domain controller in the forest
+is_subdomainDC: false # true when installing a domain controller for a subdomain
+DomainName: 'atbank.nl' # primary top-level domain name
+newDomainName: 'Test' # used when creating subdomains
+DatabasePath: 'D:\NTDS' # must exist on target domain controller as a disk
+LogPath: 'E:\NTDS' # must exist on target domain controller as a disk
+DomainMode: "7" # 4 or Win2008R2, 5 or Win2012, 6 or Win2012R2, 7 or Win2016
+DomainNetbiosName: "ATBANK" # Primary netbios name for top-level domain
+NewNetbiosName: 'ATBT' # used when creating subdomains
+SysvolPath: 'D:\Sysvol' # must exist on target domain controller as a disk
+CA: false # Install Certificate Services as well
+CAType: EnterpriseRootCA #EnterpriseRootCA, EnterpriseSubordinateCA, StandaloneRootCA, or StandaloneSubordinateCA
+CADbDir: 'D:\CSDB' # must exist on target domain controller as a disk
+CAKeyLength: "4096" # At least 4096
+CAHashAlgorithm: "SHA256"
+ValidityPeriod: "10" # Number of years the CA Cert is valid
+ADSiteName: 'ATB-Globalswitch'
+OrganizationName: "ATBank" # The name of the organization, used in script to create OU's
+DomainDN: "DC=ATBANK,DC=NL" # The Domain Distinguishedname, used in script to create OU's
+VolumeActivation: false

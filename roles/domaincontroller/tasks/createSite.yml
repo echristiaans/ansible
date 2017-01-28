@@ -1,0 +1,29 @@
+---
+- name: create temp dir
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: Download site creation script
+  win_template:
+    src: newSite.ps1.j2
+    dest: 'C:\\tmp\\newSite.ps1'
+  tags: copy
+
+- name: create Site from script
+  raw: powershell -File 'C:\\tmp\\newSite.ps1'
+  tags: install
+
+- name: test stat module on scripts
+  win_stat:
+    path: 'C:\\tmp\\newSite.ps1'
+  register: stat_newsite_script
+  tags: cleanup
+
+#- name: clean up files
+#  win_file:
+#    path: 'C:\\tmp\newSite.ps1'
+#    state: absent
+#  when: stat_newsite_script.stat.exists
+#  tags: cleanup

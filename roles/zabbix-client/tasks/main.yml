@@ -1,0 +1,19 @@
+---
+- name: Pre-flight
+  include: pre-flight.yml
+  tags: always
+
+- name: Install and configure zabbix agent Linux
+  include: install-zabbix-client-linux.yml
+  when: ansible_system == "Linux"
+  tags: linux
+
+- name: Install and configure zabbix agent Windows
+  include: install-zabbix-client-windows.yml
+  when: ansible_os_family == "Windows"
+  tags: windows
+
+- name: Add client to ATB monitoring server
+  include: add_monitoring.yml
+  when: add_monitoring == true
+  tags: add2monitoring

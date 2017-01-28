@@ -1,0 +1,34 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source zip file
+  win_stat: path='C:\\tmp\\msodbcsql_x64.msi'
+  register: stat_msi_file
+
+- name: download 64-bit source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/odbc/msodbcsql_x64.msi'
+    dest: 'C:\\tmp\\msodbcsql_x64.msi'
+  when: not stat_zip_file.stat.exists
+  tags: copy
+
+- name: test stat module on driver dir
+  win_stat: path='C:\Windows\System32\msodbcsql13.dll'
+  register: stat_sqlodbc_64_file
+
+- name: install 64-bit source
+  raw: 'msiexec /quiet /passive /qn /i c:\tmp\msodbcsql_x64.msi IACCEPTMSODBCSQLLICENSETERMS=YES'
+  when:
+    - not stat_sqlodbc_64_file.stat.exists
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\msodbcsql_x64.msi'
+    state: absent
+  when: stat_msi_file.stat.exists
+  tags: cleanup

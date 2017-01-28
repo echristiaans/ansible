@@ -1,0 +1,6 @@
+#jinja2: newline_sequence:'\r\n'
+$SafeModeAdministratorPassword = ConvertTo-SecureString -AsPlainText {{ SafeModeAdministratorPasswordText }} -Force
+
+Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
+
+Install-ADDSForest -DomainName {{ DomainName }} -DatabasePath {{ DatabasePath }} -LogPath {{ LogPath }} -DomainMode {{ DomainMode }} -DomainNetbiosName {{ DomainNetbiosName }} -SysVolPath {{ SysvolPath }} -Force:$true -InstallDNS:$true -SafeModeAdministratorPassword (convertto-securestring {{ SafeModeAdministratorPasswordText }} -asplaintext -force) -SkipPreChecks:$true

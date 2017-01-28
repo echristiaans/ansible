@@ -1,5 +1,9 @@
 ---
-- name: restart postfix
-  service: name=postfix state=reloaded
-  become: yes
+- name: newalias
+  command: newaliases
 
+- name: reload postfix
+  command: systemctl reload postfix
+
+- name: restart postfix
+  command: systemctl restart postfix

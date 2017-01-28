@@ -1,0 +1,5 @@
+---
+is_DFS: false
+is_BranchCache: false
+dedup_enabled: false
+resourcemanager_enabled: true

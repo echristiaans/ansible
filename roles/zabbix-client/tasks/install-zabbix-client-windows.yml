@@ -1,0 +1,74 @@
+---
+- name: windows | Create zabbix agent folder
+  win_file: path="C:\\Program Files\\Zabbix Agent" state=directory
+
+- name: windows | Create zabbix agent install folder
+  win_file: path="C:\\Program Files\\Zabbix Agent\\install" state=directory
+
+- name: windows | Create zabbix agent scripts folder
+  win_file: path="C:\\Program Files\\Zabbix Agent\\scripts" state=directory
+
+- name: windows | Create zabbix agent conf folder
+  win_file: path="C:\\Program Files\\Zabbix Agent\\conf" state=directory
+
+
+# check of old setup is there if it is remove it
+- name: windows | Check if old agent is present
+  win_stat: path="C:\\Program Files\\Zabbix Agent\\bin\\win64\\zabbix_agentd.exe"
+  register: zabbix_agentd_old
+
+- name: windows | Stop old zabbix service
+  win_service: name="zabbix agent" start_mode=auto state=stopped
+  when: zabbix_agentd_old.stat.exists
+
+- name: windows | uninstallagent
+  raw: C:\Progra~1\Zabbix~1\bin\win64\zabbix_agentd.exe --config C:\Progra~1\Zabbix~1\conf\zabbix_agentd_win.conf --uninstall
+  when: zabbix_agentd_old.stat.exists
+
+- name: windows | Remove old win64 agent
+  win_file: path="C:\\Program Files\\Zabbix Agent\\bin\\win64" state=absent
+  when: zabbix_agentd_old.stat.exists
+
+- name: windows | Remove old zip
+  win_file: path="C:\\Program Files\\Zabbix Agent\\Install\\zabbix_agents_3.2.0.win.zip" state=absent
+  when: zabbix_agentd_old.stat.exists
+
+- name: windows | Remove old win32 agent
+  win_file: path="C:\\Program Files\\Zabbix Agent\\bin\\win32" state=absent
+  when: zabbix_agentd_old.stat.exists
+
+
+# install the new one
+- name: windows | Copy zabbix client install to install folder
+  win_copy: src="files/zabbix_agents_3.2.0.win.zip" dest="C:\\Program Files\\Zabbix Agent\\Install"
+  register: sentia_zip_copy
+
+- name: windows | Check if agent is present
+  win_stat: path="C:\\Program Files\\Zabbix Agent\\bin\\zabbix_agentd.exe"
+  register: zabbix_agentd
+
+- name: windows | Extract zabbix zip file
+  win_unzip: src="C:\\Program Files\\Zabbix Agent\\Install\\zabbix_agents_3.2.0.win.zip" dest="C:\\Program Files\\Zabbix Agent\\bin"
+  when: sentia_zip_copy.changed or not zabbix_agentd.stat.exists or zabbix_agentd_old.stat.exists
+  notify: restart zabbixwin service
+
+- name: windows | Zabbix agent service status
+  win_service: name="zabbix agent"
+  register: service_status
+  ignore_errors: yes
+
+- name: windows | Zabbix agent configuration file
+  win_template: src=zabbix_agentd_win.conf.j2 dest="C:\\Program Files\\Zabbix Agent\\conf\\zabbix_agentd_win.conf"
+  notify: restart zabbixwin service
+
+- name: windows | Copy custom scripts
+  win_copy: src="files/windows_scripts/" dest="C:/Program Files/Zabbix Agent/scripts/"
+
+- name: windows | Install zabbix agent
+  raw: C:\Progra~1\Zabbix~1\bin\zabbix_agentd.exe --config C:\Progra~1\Zabbix~1\conf\zabbix_agentd_win.conf --install
+  register: agent_install
+  when: service_status.failed is defined
+  changed_when: "'installed successfully' in agent_install.stderr"
+
+- name: windows | Ensure zabbix agent is started at boot
+  win_service: name="zabbix agent" start_mode=auto state=started

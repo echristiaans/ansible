@@ -1,0 +1,8 @@
+---
+is_WSUS: false
+WSUS_content_dir: "D:\\WSUS"
+WSUS_SQL_Instance: []
+is_SQL_management: true
+is_rds: false
+install_winmerge: false
+install_putty: false

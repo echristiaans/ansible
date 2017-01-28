@@ -1,0 +1,10 @@
+---
+- name: install RDS Session Host
+  win_feature:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - RDS-RD-Server
+    - RSAT-RDS-Licensing-Diagnosis-UI
+  when: ansible_os_family == "Windows"
+  tags: features

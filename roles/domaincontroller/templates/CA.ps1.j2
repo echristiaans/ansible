@@ -1,0 +1,4 @@
+#jinja2: newline_sequence:'\r\n'
+install-windowsfeature Adcs-Cert-Authority -IncludeManagementTools
+
+Install-AdcsCertificationAuthority -CACommonName {{ ansible_hostname }}-CA -CAType {{ CAType }} -DatabaseDirectory {{ CADbDir }} -KeyLength {{ CAKeyLength }} -HashAlgorithmName {{ CAHashAlgorithm }} -ValidityPeriod Years -ValidityPeriodUnits {{ ValidityPeriod }}

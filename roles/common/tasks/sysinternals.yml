@@ -1,0 +1,35 @@
+---
+# tasks file for common-win
+# Install an MSI file
+#
+- name: create temp dir
+  win_file: path='C:\\tmp' state=directory
+
+- name: test stat module on msi file
+  win_stat: path='C:\\tmp\\Sysinternals.zip'
+  register: stat_msi_file
+
+- name: download sysinternals
+  win_get_url:
+    url: 'https://download.sysinternals.com/files/SysinternalsSuite.zip'
+    dest: 'C:\\tmp\\Sysinternals.zip'
+  when: not stat_msi_file.stat.exists
+
+- name: test stat module on sysinternals dir
+  win_stat: path='C:\\Utils\\sysinternals\\procmon.exe'
+  register: stat_sysinternals_file
+
+- name: install sysinternals
+  win_unzip:
+    src: C:\\tmp\\Sysinternals.zip
+    dest: C:\\Utils\\Sysinternals
+  when: not stat_sysinternals_file.stat.exists
+
+- name: get actual PATH
+  raw: $ENV:PATH
+  register: path_out
+- debug: msg="{{ path_out }}"
+
+- name: set path
+  raw: 'setx /M PATH "$ENV:PATH;C:\Utils\Sysinternals"'
+  when: not stat_sysinternals_file.stat.exists

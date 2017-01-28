@@ -1,0 +1,62 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createtempdir
+
+- name: test stat module on source zip file
+  win_stat: path='C:\tmp\office2013_x86.zip'
+  register: stat_zip_file
+
+- name: test stat module on install directory
+  win_stat: path='C:\tmp\x86'
+  register: stat_install_dir
+
+- name: test stat module on source msp file
+  win_stat: path='C:\tmp\office2013_opics.msp'
+  register: stat_msp_file
+
+- name: download source office
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/office/office2013_x86.zip'
+    dest: 'C:\\tmp\\office2013_x86.zip'
+  when: not stat_zip_file.stat.exists
+  tags: download
+
+- name: download source msp
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/office/office2013_opics.msp'
+    dest: 'C:\\tmp\\office2013_opics.msp'
+  when: not stat_msp_file.stat.exists
+  tags: download
+
+- name: test stat module on office dir
+  win_stat: path='C:\Program Files (x86)\Microsoft Office\Office15\WINWORD.EXE'
+  register: stat_word_file
+
+- name: unpack source
+  win_unzip:
+    src: C:\\tmp\\office2013_x86.zip
+    dest: C:\\tmp
+  when: not stat_word_file.stat.exists
+  tags: unpack
+
+- name: install Office 2013 Standard
+  raw: 'c:\tmp\x86\setup.exe /adminfile c:\tmp\office2013_opics.msp'
+  when: not stat_word_file.stat.exists
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: 'C:\tmp\office2013_x86.zip'
+    state: absent
+  when: stat_zip_file.stat.exists
+  tags: cleanup
+
+- name: clean up files
+  win_file:
+    path: 'C:\tmp\x86'
+    state: absent
+  when: stat_install_dir.stat.exists
+  tags: cleanup

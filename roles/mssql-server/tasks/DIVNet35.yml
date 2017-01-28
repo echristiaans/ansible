@@ -1,0 +1,26 @@
+---
+
+- name: Check for tmp directory
+  win_stat: path=D:\\tmp
+  register: tmp_info
+  
+- name: Make Temp directory
+  win_file: path=D:\\tmp state=directory
+  when: tmp_info.stat.exists==false
+
+- name: Check for sxs zip
+  win_stat: path=D:\\tmp\sxs.zip
+  register: sxs
+  
+- name: Copy sxs zip
+  win_copy: src=files/sxs.zip dest='D:\\tmp\sxs.zip'
+  when: sxs.stat.exists==false
+  
+- name: Unzip sxs zip file
+  win_unzip: 
+   src: D:\\tmp\\sxs.zip
+   dest: 'D:\'
+   
+- name: Install .Net 3.5
+  raw: 'Dism /online /enable-feature /featurename:NetFx3 /All /Source:D:\sxs /LimitAccess'
+  run_once: true

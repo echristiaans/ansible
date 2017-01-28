@@ -1,0 +1,3 @@
+---
+- include: citrix.yml
+  when: is_citrix_licenseserver

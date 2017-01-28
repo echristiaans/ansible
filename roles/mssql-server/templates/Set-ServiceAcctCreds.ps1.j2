@@ -1,0 +1,24 @@
+#jinja2: newline_sequence:'\r\n'
+param (
+  [alias('computer', 'c')]
+  [string] $computerName,
+  
+  [alias('service', 's')]
+  [string] $serviceName,
+
+  [alias('username', 'u')]
+  [string] $serviceUsername,
+
+  [alias('password', 'p')]
+  [parameter(mandatory=$true)]
+  [string] $servicePassword
+)
+
+  $filter = "Name like " + "'" + $serviceName + "'" + ""
+  $filter
+  $service = Get-WMIObject -ComputerName $computerName -namespace "root\cimv2" -class Win32_Service -Filter $filter
+  $service.StopService()
+  $service.Change($null,$null,$null,$null,$null,$null,$serviceUsername,$servicePassword)
+  sleep 2
+  $service.StartService()
+  Start-Service -Name $serviceName

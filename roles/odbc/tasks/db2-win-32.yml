@@ -1,0 +1,60 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source zip file
+  win_stat: path='C:\\tmp\\v9.7fp11_nt32_odbc_cli.zip'
+  register: stat_zip_file
+
+- name: download source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/odbc/v9.7fp11_nt32_odbc_cli.zip'
+    dest: 'C:\\tmp\\v9.7fp11_nt32_odbc_cli.zip'
+  when: not stat_zip_file.stat.exists
+  tags: copy
+
+- name: test stat module on 32-bit driver dir on 64-bit system
+  win_stat: path='C:\Program Files (x86)\IBM\clidriver\bin\db2odbc.dll'
+  register: stat_db2odbc_64_file
+  when: "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"
+
+- name: test stat module on driver dir
+  win_stat: path='C:\Program Files\IBM\clidriver\bin\db2odbc.dll'
+  register: stat_db2odbc_32_file
+
+- name: unzip 32-bit source on a 64-bit system
+  win_unzip:
+    src: C:\\tmp\\v9.7fp11_nt32_odbc_cli.zip
+    dest: "C:\Program Files (x86)\IBM"
+  when:
+    - not stat_db2odbc_64_file.stat.exists
+    - install_32bit
+    - "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"
+  tags: unzip
+
+- name: unzip 32-bit source
+  win_unzip:
+    src: C:\\tmp\\v9.7fp11_nt32_odbc_cli.zip
+    dest: "C:\Program Files\IBM"
+  when: not stat_db2odbc_32_file.stat.exists
+  tags: unzip
+
+- name: install the 32-bit driver
+  raw: '"C:\Program Files\IBM\clidriver\bin\db2cli" install -setup'
+  when: not stat_db2odbc_32_file.stat.exists
+  tags: install
+
+- name: install the 32-bit driver on a 64-bit system
+  raw: '"C:\Program Files (x86)\IBM\clidriver\bin\db2cli" install -setup'
+  when: not stat_db2odbc_64_file.stat.exists and install_32bit
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\v9.7fp11_nt32_odbc_cli.zip'
+    state: absent
+  when: stat_zip_file.stat.exists
+  tags: cleanup

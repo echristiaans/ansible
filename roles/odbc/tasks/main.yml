@@ -1,0 +1,36 @@
+---
+- include: db2-win-32.yml
+  when:
+    - is_db2client
+    - ansible_os_family == "Windows"
+    - "ansible_architecture == '32-bit' or ansible_architecture == 'i386' or install_32bit"
+
+- include: db2-win-64.yml
+  when:
+    - is_db2client
+    - ansible_os_family == "Windows"
+    - "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"
+
+- include: db2-rhel-32.yml
+  when:
+    - is_db2client
+    - ansible_os_family == "RedHat"
+    - "ansible_architecture == '32-bit' or ansible_architecture == 'i386' or install_32bit"
+
+- include: db2-rhel-64.yml
+  when:
+    - is_db2client
+    - ansible_os_family == "RedHat"
+    - "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"
+
+- include: sql-win-32.yml
+  when:
+    - is_sqlclient
+    - ansible_os_family == "Windows"
+    - "ansible_architecture == '32-bit' or ansible_architecture == 'i386' or install_32bit"
+
+- include: sql-win-64.yml
+  when:
+    - is_sqlclient
+    - ansible_os_family == "Windows"
+    - "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"

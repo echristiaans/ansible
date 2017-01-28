@@ -1,0 +1,6 @@
+---
+- name: install deduplication feature
+  win_feature:
+    name: "FS-Data-Deduplication"
+    state: present
+  tags: dedup

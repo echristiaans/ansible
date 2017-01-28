@@ -1,0 +1,13 @@
+---
+auth_admin_groupname: "atbadmins"
+
+auth_bsd_admin_groupname: "wheel"
+
+auth_allow_always: []
+
+auth_allow_teams: []
+auth_allow_users: []
+
+auth_delete_users: []
+auth_delete_teams: []
+auth_delete_extra_users: []

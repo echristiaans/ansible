@@ -1,0 +1,55 @@
+---
+- name: Add Monitoring | Check if system has location data present
+  fail: msg="No location data in SIS for this system!"
+  when: sentia_location == ''
+
+- name: Add Monitoring | Flag system to be added to Linux host group and templates
+  set_fact: zabbix_system_host_group="Linux servers" zabbix_system_template="Template OS Linux"
+  when: ansible_system == "Linux"
+
+- name: Add Monitoring | Flag system to be added to Windows host group and templates
+  set_fact: zabbix_system_host_group="Windows servers" zabbix_system_template="Template OS Windows"
+  when: ansible_os_family == "Windows"
+
+- name: Add Monitoring | Determine location group proxy server name
+  set_fact: "zabbix_location_group_name={{ zabbix_proxies[sentia_location].group }}"
+  ignore_errors: yes
+  when: zabbix_proxies[sentia_location] is defined
+
+- name: Add Monitoring | Determine Zabbix proxy server name
+  set_fact: "zabbix_proxy_server_name={{ zabbix_proxies[sentia_location].name }}"
+  ignore_errors: yes
+  when: zabbix_proxies[sentia_location] is defined
+
+- name: Add Monitoring | Create funky group list because zabbix module is weird
+  set_fact: zabbix_groups_list="{{ [ zabbix_system_host_group ] + zabbix_groups + zabbix_default_groups + [ zabbix_location_group_name ] }}"
+
+- name: Add Monitoring | Determine IP address for Zabbix to use for monitoring
+  set_fact: zabbix_int_ip="{{ ansible_ssh_host }}"
+
+- name: Add Monitoring | Create funky template list because zabbix module is weird
+  set_fact: zabbix_templates_list="{{ [zabbix_system_template] + zabbix_default_templates + (zabbix_templates | default([])) }}"
+
+- name: Add Monitoring | Add client to Zabbix monitoring
+  local_action:
+    module: zabbix_host
+    server_url: "{{ zabbix_import.url }}"
+    login_user: "{{ zabbix_import.username }}"
+    login_password: "{{ zabbix_import.password }}"
+    host_name: "{{ ansible_hostname | lower }}"
+    host_groups: "{{ zabbix_groups_list }}"
+    link_templates: "{{ zabbix_templates_list }}"
+    status: enabled
+    state: present
+#    inventory_mode: automatic
+    interfaces: 
+      - type: 1    # Zabix agent
+        main: 1
+        useip: 1
+        ip: "{{ zabbix_int_ip }}"
+        dns: ""
+        port: 10050
+    proxy: "{{ zabbix_proxy_server_name if zabbix_no_proxy is undefined else None }}"
+  ignore_errors: yes
+  register: add2mon_result
+  changed_when: zabbix_no_proxy is undefined and add2mon_result.changed

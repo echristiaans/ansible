@@ -1,0 +1,10 @@
+---
+- include: jre-win-32.yml
+  when:
+    - ansible_os_family == "Windows"
+    - "ansible_architecture == '32-bit' or ansible_architecture == 'i386' or install_32bit"
+
+- include: jre-win-64.yml
+  when:
+    - ansible_os_family == "Windows"
+    - "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"

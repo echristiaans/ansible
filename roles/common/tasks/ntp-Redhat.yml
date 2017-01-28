@@ -1,0 +1,16 @@
+---
+  - name: ntp | Install ntp package
+    yum: pkg=ntp state=present
+    ignore_errors: yes
+    become: yes
+  - name: ntp | Set timezone
+    file: src="/usr/share/zoneinfo/{{ time_zone }}" dest="/etc/localtime" state=link force=yes
+    become: yes
+  - name: ntp | Set NTP servers
+    template: src=ntp.conf.Redhat.j2 dest=/etc/ntp.conf
+    notify:
+      - reload ntp
+    become: yes
+  - name: ntp | Enable ntpd service
+    service: name=ntpd state=running enabled=yes
+    become: yes

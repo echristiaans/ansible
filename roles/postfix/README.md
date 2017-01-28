@@ -1,54 +1,21 @@
-postfix [![Build Status](https://travis-ci.org/holms/ansible-postfix.svg?branch=master)](https://travis-ci.org/holms/ansible-postfix)
-====
+# Ansible Role: Postfix
 
-Postfix and Dovecot SASL with system user role.
+Installs postfix on RedHat/CentOS or Debian/Ubuntu.
 
-Currently only outgoing emails supported
+## Requirements
 
-Requirements
-------------
+If you're using this as an SMTP relay server, you will need to do that on your own, and open TCP port 25 in your server firewall.
 
-Ansible version 1.6
+## Role Variables
 
-## Platforms
+None.
 
-* Ubuntu 14.10
+## Dependencies
 
-Role Variables
---------------
+None.
 
-Variable name | Variable value |
---------------|-----------------
-postfix_domain| example.com
-postfix_full_domain| my.example.com
-postfix_local_domain | mx
-postfix_users | { name: myuser, password: _sha512_password_hash }
+## Example Playbook
 
-Example
--------
-
-```
-- hosts: my.example.com:my
-  user: root
-
-  vars:
-
-    postfix_full_domain: my.example.com
-    postfix_domain: example.com
-    postfix_local_domain: my
-    postfix_users:
-        - { name: whatever, password: _sha512_hash_here }  # use mkpasswd tool to generate one
-
-  roles:
-    - { role: postfix }
-```
-
-License
--------
-
-MIT
-
-Author Information
-------------------
-
-Roman Gorodeckij (<holms@holms.lt>)
+    - hosts: all
+      roles:
+        - { role: atbank-postfix }

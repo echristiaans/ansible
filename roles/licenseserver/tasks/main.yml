@@ -1,0 +1,6 @@
+---
+- include: citrix.yml
+  when: is_citrix_licenseserver
+
+- include: rdp.yml
+  when: is_rdp_licenseserver

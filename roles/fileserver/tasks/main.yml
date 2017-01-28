@@ -1,0 +1,24 @@
+---
+- name: install File Server role
+  win_feature:
+    name: "FS-FileServer"
+    state: present
+  tags: roles
+
+- name: install File Server VSS Agent
+  win_feature:
+    name: "FS-VSS-Agent"
+    state: present
+  tags: roles
+
+- include: dfs.yml
+  when: is_DFS
+
+- include: branchcache.yml
+  when: is_BranchCache
+
+- include: dedup.yml
+  when: dedup_enabled
+
+- include: resourcemanager.yml
+  when: resourcemanager_enabled

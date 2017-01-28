@@ -1,0 +1,6 @@
+<Configuration Product="AccessRT">
+<Display Level="None" CompletionNotice="no" SuppressModal="yes" AcceptEula="yes" />
+<Logging Type="standard" Path="C:\Tmp\" Template="Microsoft_Access_2010_Runtime_Setup(*).log" />
+<COMPANYNAME Value="Sentia" />
+<Setting Id="SETUP_REBOOT" Value="Suppress" />
+</Configuration>

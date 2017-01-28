@@ -1,0 +1,11 @@
+---
+vmtools:
+  packages:
+    vmtools:
+      package_name: open-vm-tools
+      package_version: latest
+  service:
+    vmtools:
+      service_name: vmtoolsd
+      service_state: started
+      enabled: yes

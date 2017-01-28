@@ -1,0 +1,17 @@
+
+module zabbix_agent 1.0;
+
+require {
+	type systemd_unit_file_t;
+	type iptables_unit_file_t;
+	type init_t;
+	type keepalived_unit_file_t;
+	type zabbix_agent_t;
+	type system_dbusd_t;
+	class process setrlimit;
+	class dbus send_msg;
+	class service status;
+}
+
+#============= init_t ==============
+allow init_t zabbix_agent_t:dbus send_msg;

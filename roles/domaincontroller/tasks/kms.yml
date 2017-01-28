@@ -1,0 +1,10 @@
+---
+- name: install Windows Volume Activation Feature
+  win_feature:
+    name: "VolumeActivation"
+    state: present
+
+- name: Install Volume Activation Tools
+  win_feature:
+    name: RSAT-VA-Tools
+    state: present

@@ -1,0 +1,14 @@
+---
+- name: Load user variable sets
+  include_vars: "{{ item }}"
+  with_items:
+    - "users.yml"
+    - "teams.yml"
+
+- name: Process users for linux server
+  include: linuxusers.yml
+  when: ansible_system == "Linux"
+
+- name: Process users for OpenBSD server
+  include: openbsdusers.yml
+  when: ansible_system == "OpenBSD"

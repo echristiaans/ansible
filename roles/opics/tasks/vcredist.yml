@@ -1,0 +1,90 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat if Visual C++ 2008 redistributable 64-bit SP1 is installed
+  raw: 'reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{8220EEFE-38CD-377E-8595-13398D740ACE}"'
+  register: queryvc2008x64
+  ignore_errors: yes
+
+- name: test stat if Visual C++ 2010 redistributable 64-bit SP1 is installed
+  raw: 'reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{1D8E6291-B0D5-35EC-8441-6616F567A0F7}"'
+  register: queryvc2010x64
+  ignore_errors: yes
+
+- name: test stat if Visual C++ 2010 redistributable 32-bit SP1 is installed
+  raw: 'reg query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}"'
+  register: queryvc2010x86
+  ignore_errors: yes
+
+- name: test stat module on source exe file
+  win_stat: path='C:\\tmp\\vcredist_2008_x64.exe'
+  register: stat_vcredist2008exe_file
+
+- name: test stat module on source exe file
+  win_stat: path='C:\\tmp\\vcredist_2010_x64.exe'
+  register: stat_vcredist2010x64exe_file
+
+- name: test stat module on source exe file
+  win_stat: path='C:\\tmp\\vcredist_2010_x68.exe'
+  register: stat_vcredist2010x86exe_file
+
+- name: download Visual C++ 2008 redistributable 64-bit SP1 source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/vcredist/vcredist_2008_x64.exe'
+    dest: 'C:\\tmp\\vcredist_2008_x64.exe'
+  when: "not stat_vcredist2008exe_file.stat.exists or 'unable to find' in queryvc2010x86.stderr"
+  tags: download
+
+- name: download Visual C++ 2010 redistributable 64-bit SP1 source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/vcredist/vcredist_2010_x64.exe'
+    dest: 'C:\\tmp\\vcredist_2010_x64.exe'
+  when: "not stat_vcredist2010x64exe_file.stat.exists or 'unable to find' in queryvc2010x86.stderr"
+  tags: download
+
+- name: download Visual C++ 2010 redistributable 32-bit SP1 source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/vcredist/vcredist_2010_x86.exe'
+    dest: 'C:\\tmp\\vcredist_2010_x86.exe'
+  when: "not stat_vcredist2010x86exe_file.stat.exists or 'unable to find' in queryvc2010x86.stderr"
+  tags: download
+
+- name: install Visual C++ 2008 redistributable 64-bit SP1
+  raw: 'c:\\tmp\\vcredist_2008_x64.exe /q /norestart'
+  when: "'unable to find' in queryvc2008x64.stderr"
+  tags: install
+
+- name: install Visual C++ 2010 redistributable 64-bit SP1
+  raw: 'c:\\tmp\\vcredist_2010_x64.exe /q /norestart'
+  when: "'unable to find' in queryvc2010x64.stderr"
+  tags: install
+
+- name: install Visual C++ 2010 redistributable 32-bit SP1
+  raw: 'c:\\tmp\\vcredist_2010_x86.exe /q /norestart'
+  when: "'unable to find' in queryvc2010x86.stderr"
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: 'C:\tmp\vcredist_2008_x64.exe'
+    state: absent
+  when: stat_vcredist2008exe_file.stat.exists
+  tags: cleanup
+
+- name: clean up files
+  win_file:
+    path: 'C:\tmp\vcredist_2010_x64.exe'
+    state: absent
+  when: stat_vcredist2010x64exe_file.stat.exists
+  tags: cleanup
+
+- name: clean up files
+  win_file:
+    path: 'C:\tmp\vcredist_2010_x86.exe'
+    state: absent
+  when: stat_vcredist2010x86exe_file.stat.exists
+  tags: cleanup

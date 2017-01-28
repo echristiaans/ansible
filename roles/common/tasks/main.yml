@@ -1,0 +1,62 @@
+---
+- include_vars: redhat7.yml
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+
+- name: Windows common configurations - install 7zip
+  include: 7zip.yml
+  when: ansible_os_family == "Windows"
+  tags: windows
+
+- name: Windows common configurations - install Notepad
+  include: npp.yml
+  when: ansible_os_family == "Windows"
+  tags: windows
+
+- name: Windows common configurations - install Sysinternals Suite
+  include: sysinternals.yml
+  when: ansible_os_family == "Windows"
+  tags: windows
+
+- name: Windows common configurations - configure IE
+  include: ie.yml
+  when: ansible_os_family == "Windows"
+  tags: windows
+
+#- name: Install Telnet-Client
+#  win_feature:
+#    name: "Telnet-Client"
+#    state: present
+#  when: ansible_os_family == "Windows" and ansible_distribution_version > "6.1"
+#  tags: windows
+
+- include: yum_repos.yml
+  when: manage_yum and ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7'
+
+- name: Set MOTD (Windows family)
+  include: motd-windows.yml
+  when: motd_enabled == true and ansible_os_family == 'Windows'
+  tags: motd
+
+- name: Configure OpenSSH (RedHat Family)
+  include: sshd-Redhat.yml
+  when: sshd_enabled == true and ansible_os_family == 'RedHat'
+  tags: ssh
+
+- name: Set MOTD (Redhat family)
+  include: motd-Redhat.yml
+  when: motd_enabled == true and ansible_os_family == 'RedHat'
+  tags: motd
+
+- name: Set NTP Client (Redhat family)
+  include: ntp-Redhat.yml
+  when: ntp_enabled == true and ansible_os_family == 'RedHat'
+  tags: ntp
+
+- include: packages.yml
+  when: manage_packages and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+
+- include: tuning.yml
+  when: manage_tuning and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+
+- include: vmware.yml
+  when: manage_vmware and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'

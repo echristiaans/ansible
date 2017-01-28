@@ -1,0 +1,23 @@
+---
+- name: install WSUS
+  win_feature:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - UpdateServices-Services
+    - UpdateServices-DB
+    - UpdateServices-RSAT
+  when: ansible_os_family == "Windows"
+  tags: features
+
+- name: make sure the content dir exists
+  win_file:
+    path: '{{ WSUS_content_dir }}'
+    state: directory
+  tags: createdir
+
+- name: configure the content dir for WSUS
+  raw: '"C:\Program Files\Update Services\Tools\"WsusUtil.exe PostInstall CONTENT_DIR="{{ WSUS_content_dir }}"'
+
+- name: configure the SQL Instance for WSUS
+  raw: '"C:\Program Files\Update Services\Tools\"WsusUtil.exe PostInstall SQL _INSTANCE_NAME="{{ WSUS_SQL_Instance }}"'

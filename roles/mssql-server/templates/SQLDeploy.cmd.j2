@@ -1,0 +1,4 @@
+#jinja2: newline_sequence:'\r\n'
+
+Powershell -File D:\tmp\Set-ServiceAcctCreds.ps1 -computer "localhost" -service 'SQLAgent${{ stage | upper }}_{{ client | truncate(3, True,"") }}' -username "{{ ansible_env.USERDOMAIN }}\{{ sa_sqlagent_test }}" -password "{{ sa_sqlagent_test_pwd }}"
+Powershell -File D:\tmp\Set-ServiceAcctCreds.ps1 Set-ServiceAcctCreds -computer "localhost" -service 'MSSQL${{ stage | upper }}_{{ client | truncate(3, True,"") }}' -username "{{ ansible_env.USERDOMAIN }}\{{ sa_sqlserver_test }}" -password "{{ sa_sqlserver_test_pwd }}"

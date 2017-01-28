@@ -1,0 +1,60 @@
+---
+- name: linux | Install prerequisite packages
+  yum: name="policycoreutils-python" state=present
+  become: yes
+
+- name: linux | Copy RPM to target
+  copy: src="files/zabbix-agent-3.2.1-1.el7.x86_64.rpm" dest="/var/tmp/" owner=root group=wheel mode=0755
+  become: yes
+
+- name: linux | Install Zabbix
+  yum: name=/var/tmp/zabbix-agent-3.2.1-1.el7.x86_64.rpm state=present
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+  become: yes
+
+- name: linux | Install Zabbix configuration
+  template: src=zabbix_agentd_linux.conf.j2 dest=/etc/zabbix/zabbix_agentd.conf owner=root group=root mode=644
+  become: yes
+  notify: restart zabbix agent
+
+- name: linux | Create zabbix scripts folder
+  file: path=/var/zabbix/scripts state=directory mode=0755 owner=root group=zabbix
+  become: yes
+
+- name: linux | Copy zabbix linux scripts
+  copy: src=files/linux_scripts/ dest=/var/zabbix/scripts/ mode=0755 owner=root group=zabbix
+  become: yes
+
+- name: linux | Check if selinx is enabled
+  shell: sestatus | awk '{print $NF}' | head -n 1
+  register: sestatus
+  changed_when: sestatus.rc > 0
+  become: yes
+
+- name: linux | Make zabbix agent selinux domain permissive
+  selinux_permissive: name=zabbix_agent_t permissive=true
+  when: sestatus.stdout == "enabled"
+  become: yes
+
+- name: linux | Copy zabbix_agent selinux module
+  copy: src=files/selinux/zabbix_agent.pp dest=/etc/zabbix/zabbix_agent.pp owner=root group=root mode=0644
+  register: zabbix_selinux_mod_copy
+  when: sestatus.stdout == "enabled"
+  become: yes
+
+- name: linux | Load zabbix_agent selinux module
+  command: /usr/sbin/semodule -i /etc/zabbix/zabbix_agent.pp
+  when: zabbix_selinux_mod_copy.changed and sestatus.stdout == "enabled"
+  become: yes
+
+- name: linux | Allow zabbix user to sudo without tty
+  lineinfile: dest=/etc/sudoers  state=present insertafter='^Defaults.*requiretty' line="Defaults:zabbix !requiretty" validate='visudo -cf %s'
+  become: yes
+
+- name: linux | Allow zabbix user to sudo specific commands
+  lineinfile: "dest=/etc/sudoers  state=present regexp='zabbix  ALL' line='zabbix  ALL=(ALL) NOPASSWD:{{ zabbix_agent_sudo_cmds | join(\", \") }}' validate='visudo -cf %s'"
+  become: yes
+
+- name: linux | Ensure Zabbix agent enabled and started
+  service: name=zabbix-agent state=started enabled=yes
+  become: yes

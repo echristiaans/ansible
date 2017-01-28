@@ -1,0 +1,7 @@
+---
+# defaults file for DIV-Install
+sa_sqlagent_test: "{{ lookup('enigma', '11314', 'username') }}"
+sa_sqlagent_test_pwd: "{{ lookup('enigma', '11314', 'password') }}"
+sa_sqlserver_test: "{{ lookup('enigma', '11315', 'username') }}"
+sa_sqlserver_test_pwd: "{{ lookup('enigma', '11315', 'password') }}"
+sapasswd: []

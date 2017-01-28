@@ -1,0 +1,11 @@
+---
+- include: dotnet.yml
+
+- include: iis.yml
+
+- include: msmq.yml
+
+- include: vcredist.yml
+
+- include: office.yml
+  when: install_office

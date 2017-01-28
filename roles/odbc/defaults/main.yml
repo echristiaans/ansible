@@ -1,0 +1,4 @@
+---
+is_db2client: false
+install_32bit: false
+is_sqlclient: false

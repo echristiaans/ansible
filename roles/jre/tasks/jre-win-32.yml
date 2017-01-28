@@ -1,0 +1,54 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source exe file
+  win_stat: path='C:\\tmp\\jre-8u111-windows-i586.exe'
+  register: stat_exe_file
+
+- name: download source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/java/jre-8u111-windows-i586.exe'
+    dest: 'C:\\tmp\\jre-8u111-windows-i586.exe'
+  when: not stat_exe_file.stat.exists
+  tags: copy
+
+- name: install config
+  win_copy:
+    src: jre_install.cfg
+    dest: 'C:\\tmp\\jre_install.cfg'
+  tags: copy
+
+- name: test stat module on 32-bit driver dir on 64-bit system
+  win_stat: path='C:\Program Files (x86)\Java\jre1.8.0_111\bin\java.exe'
+  register: stat_java_64_file
+  when: "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"
+
+- name: test stat module on driver dir
+  win_stat: path='C:\Program Files\Java\jre1.8.0_111\bin'
+  register: stat_java_32_file
+
+- name: install 32-bit source on a 64-bit system
+  raw: 'c:\tmp\jre-8u111-windows-i586.exe INSTALLCFG=C:\tmp\jre_install.cfg'
+  when:
+    - not stat_java_64_file.stat.exists
+    - install_32bit
+    - "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"
+  tags: install
+
+- name: install 32-bit source
+  raw: 'c:\tmp\jre-8u111-windows-i586.exe INSTALLCFG=C:\tmp\jre_install.cfg'
+  when:
+    - not stat_java_32_file.stat.exists
+    - "ansible_architecture == '32-bit'"
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\jre-8u111-windows-i586.exe'
+    state: absent
+  when: stat_exe_file.stat.exists
+  tags: cleanup

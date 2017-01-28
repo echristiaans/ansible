@@ -1,0 +1,29 @@
+---
+- name: create temp dir
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: Download OU creation script
+  win_template:
+    src: OUs.ps1.j2
+    dest: 'C:\\tmp\\OUs.ps1'
+  tags: copy
+
+- name: create OU's from script
+  raw: powershell -File 'C:\\tmp\\OUs.ps1'
+  tags: install
+
+- name: test stat module on scripts
+  win_stat:
+    path: 'C:\\tmp\\OUs.ps1'
+  register: stat_OU_script
+  tags: cleanup
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\OUs.ps1'
+    state: absent
+  when: stat_OU_script.stat.exists
+  tags: cleanup

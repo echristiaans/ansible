@@ -1,0 +1,5 @@
+---
+- name: Determine Zabbix proxy server IP
+  set_fact: "zabbix_proxy_server={{ zabbix_proxies[sentia_location].ip }}"
+  ignore_errors: yes
+  when: zabbix_proxies[sentia_location] is defined

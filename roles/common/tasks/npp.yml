@@ -1,0 +1,30 @@
+---
+# tasks file for common-win
+# Install an MSI file
+#
+- name: create temp dir
+  win_file: path='C:\\tmp' state=directory
+
+- name: test stat module on msi file
+  win_stat: path='C:\\tmp\\npp.6.8.3.Installer.exe'
+  register: stat_msi_file
+
+- name: download npp
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/npp/npp.6.8.3.Installer.exe'
+    dest: 'C:\tmp\npp.6.8.3.Installer.exe'
+  when: not stat_msi_file.stat.exists
+
+- name: test stat module on npp dir
+  win_stat: path='C:\\Program Files (x86)\\Notepad++\\notepad++.exe'
+  register: stat_npp_file
+
+- name: install npp
+  raw: 'C:\tmp\npp.6.8.3.Installer.exe /S'
+  when: not stat_npp_file.stat.exists
+
+#- name: context menu npp
+#  raw: reg add HKCR\*\shell\Notepad++ /v "" /t REG_SZ /d "Notepad++"
+
+#- name: context menu npp
+#  raw: reg add HKCR\*\shell\Notepad++\command /v "" /t REG_SZ /d "\"C:\Program Files (x86)\Notepad++\Notepad++.exe\" %1"

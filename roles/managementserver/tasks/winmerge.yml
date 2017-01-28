@@ -1,0 +1,31 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on winmerge dir
+  win_stat: path='C:\Program Files (x86)\WinMerge\WinMergeU.exe'
+  register: stat_winmerge_file
+
+- name: test stat module on source zip file
+  win_stat: path='C:\\tmp\\WinMerge-2.14.0-Setup.exe'
+  register: stat_exe_file
+
+- name: download source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/winmerge/WinMerge-2.14.0-Setup.exe'
+    dest: 'C:\\tmp\\WinMerge-2.14.0-Setup.exe'
+  when: not stat_exe_file.stat.exists and not stat_winmerge_file.stat.exists
+
+- name: install WinMerge
+  raw: 'C:\tmp\WinMerge-2.14.0-Setup.exe /VERYSILENT /SP- /NORESTART'
+  when: not stat_winmerge_file.stat.exists
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\WinMerge-2.14.0-Setup.exe'
+    state: absent
+  when: stat_exe_file.stat.exists
+  tags: cleanup

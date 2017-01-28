@@ -1,0 +1,21 @@
+---
+- name: install Web Server role
+  win_feature:
+    name: "Web-Server"
+    state: present
+  tags: roles
+
+- name: install ASP.NET 4.5 feature
+  win_feature:
+    name: "Web-Asp-Net45"
+    state: present
+  tags: roles
+
+- name: install web server management tools
+  win_feature:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - Web-Mgmt-Console
+    - Web-Mgmt-Compat
+    - Web-Scripting-Tools

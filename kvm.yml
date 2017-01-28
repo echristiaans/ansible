@@ -1,8 +1,23 @@
 ---
-  - hosts: kvm
-    roles:
+- hosts: kvm1
+  roles:
 #      - role: common-lin
-      - role: kvm
+    - role: kvm
 #       - role: dhcpd
-
+  vars:
+    config_kvm_virtual_networks: true
+    config_nfs_mounts: true  #defines if NFS mountpoints should be mounted from nfs_mounts
+    config_nfs_permissions: false  #defines if nfs mountpoints should have permissions set or not...this defaults to root
+    kvm_virtual_networks:
+      - name: DEFAULT_VLAN4
+        mode: bridge
+        bridge_name: vmbr2
+        autostart: true
+        state: active  #options are active, inactive, present and absent
+    nfs_mounts:
+      - server: 10.12.10.201
+        export: /volume1/kvm
+        mount_options: hard,intr,nfsvers=3,tcp,bg,_netdev,auto,nolock
+        mountpoint: /mnt/nfs
+  become: true
     #vars:

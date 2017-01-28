@@ -1,0 +1,12 @@
+---
+- name: install DFS Replication feature
+  win_feature:
+    name: "FS-DFS-Replication"
+    state: present
+  tags: DFS
+
+- name: install DFS Management Tools
+  win_feature:
+    name: "RSAT-DFS-Mgmt-Con"
+    state: present
+  tags: DFS

@@ -1,0 +1,62 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source zip file
+  win_stat: path='C:\\tmp\\accessRT_x86.zip'
+  register: stat_zip_file
+
+- name: download source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/accessrt/accessRT_x86.zip'
+    dest: 'C:\\tmp\\accessRT_x86.zip'
+  when: not stat_zip_file.stat.exists
+  tags: copy
+
+- name: install config
+  win_copy:
+    src: access_install.xml
+    dest: 'C:\\tmp\\access_install.xml'
+  tags: copy
+
+- name: test stat module on 32-bit driver on 64-bit system
+  win_stat: path='C:\Program Files (x86)\Microsoft Office\Office14\MSACCESS.EXE'
+  register: stat_access64_file
+
+- name: test stat module on 32-bit driver on 32-bit system
+  win_stat: path='C:\Program Files\Microsoft Office\Office14\MSACCESS.EXE'
+  register: stat_access32_file
+
+- name: unzip 32-bit source
+  win_unzip:
+    src: C:\\tmp\\accessRT_x86.zip
+    dest: C:\\tmp
+  tags: unzip
+
+- name: install 32-bit source on 64-bit system
+  raw: 'c:\tmp\accessRT\setup.exe /config C:\tmp\access_install.xml'
+  when:
+    - not stat_access64_file.stat.exists
+    - install_32bit
+    - "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"
+  tags: install
+
+- name: install 32-bit source on 32-bit system
+  raw: 'c:\tmp\accessRT\setup.exe /config C:\tmp\access_install.xml'
+  when:
+    - not stat_access32_file.stat.exists
+    - "ansible_architecture == '32-bit'"
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - 'C:\\tmp\\accessRT_x86.zip'
+    - 'C:\\tmp\\accessRT'
+    - 'C:\\tmp\\access_install.xml'
+  tags: cleanup

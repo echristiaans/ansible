@@ -1,0 +1,40 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source exe file
+  win_stat: path='C:\\tmp\\jre-8u111-windows-x64.exe'
+  register: stat_exe_file
+
+- name: download source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/java/jre-8u111-windows-x64.exe'
+    dest: 'C:\\tmp\\jre-8u111-windows-x64.exe'
+  when: not stat_exe_file.stat.exists
+  tags: copy
+
+- name: install config
+  win_copy:
+    src: jre_install.cfg
+    dest: 'C:\\tmp\\jre_install.cfg'
+  tags: copy
+
+- name: test stat module on driver dir
+  win_stat: path='C:\Program Files\Java\jre1.8.0_111\bin'
+  register: stat_java_file
+
+- name: install 64-bit source
+  raw: 'c:\tmp\jre-8u111-windows-x64.exe INSTALLCFG=C:\tmp\jre_install.cfg'
+  when:
+    - not stat_java_file.stat.exists
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\jre-8u111-windows-x64.exe'
+    state: absent
+  when: stat_exe_file.stat.exists
+  tags: cleanup

@@ -1,0 +1,6 @@
+---
+- name: install branchcache feature
+  win_feature:
+    name: "FS-BranchCache"
+    state: present
+  tags: branchcache

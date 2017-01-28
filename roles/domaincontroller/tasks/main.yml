@@ -1,0 +1,54 @@
+---
+- name: first check if already a DC
+  raw: powershell -command " &{ get-windowsfeature ad-domain-services | select InstallState | ft -HideTableHeaders }"
+  register: ADcheck
+  tags: adcheck
+
+- name: check if already a CA
+  raw: powershell -command " &{ get-windowsfeature adcs-cert-authority | select InstallState | ft -HideTableHeaders }"
+  register: CACheck
+  tags: cacheck
+
+- name: Check if sitename exists
+  raw: >
+    powershell -command { Get-ADObject -SearchBase ("CN=Sites," + ((Get-ADRootDSE).ConfigurationNamingContext)) –filter { objectClass -eq "site" } -properties "siteObjectBL", "location", "description" | select Name | ft -HideTableHeaders }
+  delegate_to: atb-dc-p01.atbank.nl
+  register: SiteCheck
+  tags: sitecheck
+
+- name: check if OU's are already created
+  raw: powershell -command " &{ Get-OrganizationalUnit -Identity "OU={{ OrganizationName }},{{ DomainDN }}" }"
+  register: OUCheck
+  tags: OUCheck
+
+- debug: msg="{{ SiteCheck }}"
+
+- include: firstDC.yml
+  when:
+    - "'Installed' not in ADcheck.stdout"
+    - is_FirstDC
+
+- include: createSite.yml
+  when: ADSiteName not in SiteCheck.stdout
+
+- include: additionalDCs.yml
+  when:
+    - "'Installed' not in ADcheck.stdout"
+    - not is_FirstDC
+    - not is_subdomainDC
+
+- include: subdomainDC.yml
+  when:
+    - "'Installed' not in ADcheck.stdout"
+    - is_subdomainDC
+
+- include: createOUs.yml
+  when: "'object not found' in OUCheck.stdout"
+
+- include: CA.yml
+  when:
+    - CA
+    - "'Installed' not in CAcheck.stdout"
+
+- include: kms.yml
+  when: VolumeActivation

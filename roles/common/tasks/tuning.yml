@@ -1,0 +1,3 @@
+---
+- name: Add kernel panic to sysctl
+  sysctl: name=kernel.panic value=1 sysctl_file=/etc/sysctl.conf reload=yes

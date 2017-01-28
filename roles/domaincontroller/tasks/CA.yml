@@ -1,0 +1,19 @@
+---
+- name: Download CA install script
+  win_template:
+    src: CA.ps1.j2
+    dest: 'C:\\tmp\\CA.ps1'
+  tags: copy
+
+- name: test stat module on scripts
+  win_stat:
+    path: 'C:\\tmp\\CA.ps1'
+  register: stat_CA_script
+  tags: cleanup
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\CA.ps1'
+    state: absent
+  when: stat_CA_script.stat.exists
+  tags: cleanup

@@ -1,0 +1,12 @@
+#jinja2: newline_sequence:'\r\n'
+$newSiteName = "{{ ADSiteName }}"
+$configNCDN = (Get-ADRootDSE).ConfigurationNamingContext
+$sitesContainerDN = ("CN=Sites," + $configNCDN)
+$newSiteDN = ("CN=" + $newSiteName +"," + $sitesContainerDN)
+New-ADObject -Name $newSiteName -Path $sitesContainerDN -Type site
+New-ADObject -Name "NTDS Site Settings" -Path $newSiteDN -Type nTDSSiteSettings
+New-ADObject -Name "Servers" -Path $newSiteDN -Type serversContainer
+$siteLinkContainer = ("CN=DEFAULTIPSITELINK,CN=IP,CN=Inter-Site Transports,CN=Sites," + $configNCDN)
+$siteLink = Get-ADObject $siteLinkContainer -Properties siteList
+$siteLink.siteList.Add($newSiteDN)
+Set-ADObject -Instance $siteLink

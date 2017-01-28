@@ -1,0 +1,40 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source zip file
+  win_stat: path='C:\\tmp\\v9.7fp11_nt32_odbc_cli.zip'
+  register: stat_zip_file
+
+- name: download 64-bit source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/odbc/v9.7fp11_ntx64_odbc_cli.zip'
+    dest: 'C:\\tmp\\v9.7fp11_ntx64_odbc_cli.zip'
+  when: not stat_zip_file.stat.exists
+  tags: copy
+
+- name: test stat module on driver dir
+  win_stat: path='C:\Program Files\IBM\clidriver\bin\db2odbc.dll'
+  register: stat_db2odbc_file
+
+- name: unzip 64-bit source
+  win_unzip:
+    src: C:\\tmp\\v9.7fp11_ntx64_odbc_cli.zip
+    dest: "C:\Program Files\IBM"
+  when: not stat_db2odbc_file.stat.exists
+  tags: unzip
+
+- name: install the 64-bit driver
+  raw: '"C:\Program Files\IBM\clidriver\bin\db2cli" install -setup'
+  when: not stat_db2odbc_file.stat.exists
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\v9.7fp11_ntx64_odbc_cli.zip'
+    state: absent
+  when: stat_zip_file.stat.exists
+  tags: cleanup

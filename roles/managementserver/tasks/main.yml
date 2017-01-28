@@ -1,0 +1,20 @@
+---
+- name: include WSUS
+  include: wsus.yml
+  when: is_WSUS
+
+- name: include sqlmanagement
+  include: sqlmanagement.yml
+  when: is_SQL_management
+
+- name: include rds
+  include: rds.yml
+  when: is_rds
+
+- name: include winmerge
+  include: winmerge.yml
+  when: install_winmerge
+
+- name: include putty
+  include: putty.yml
+  when: install_putty

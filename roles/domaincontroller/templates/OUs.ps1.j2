@@ -1,0 +1,35 @@
+#jinja2: newline_sequence:'\r\n'
+$org=Get-ADOrganizationalUnit -Identity "OU=Servers,{{ DomainDN }}"
+if (-Not $org) {
+New-ADOrganizationalUnit -Name Servers -Path "{{ DomainDN }}"
+New-ADOrganizationalUnit -Name CoreBankingServers -Path "OU=Servers,{{ DomainDN }}"
+New-ADOrganizationalUnit -Name DatabaseServers -Path "OU=Servers,{{ DomainDN }}"
+New-ADOrganizationalUnit -Name AdminServers -Path "OU=Servers,{{ DomainDN }}"
+New-ADOrganizationalUnit -Name ManagementServers -Path "OU=Servers,{{ DomainDN }}"
+New-ADOrganizationalUnit -Name ApplicationServers -Path "OU=Servers,{{ DomainDN }}"
+}
+$org2=Get-ADOrganizationalUnit -Identity "OU={{ OrganizationName }},{{ DomainDN }}"
+if (-Not $org2){
+New-ADOrganizationalUnit -Name {{ OrganizationName }} -Path "{{ DomainDN }}"
+New-ADOrganizationalUnit -Name Computers -Path "OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name Laptops -Path "OU=Computers,OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name Workstations -Path "OU=Computers,OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name ThinClients -Path "OU=Computers,OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name Groups -Path "OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name DistributionGroups -Path "OU=Groups,OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name ApplicationGroups -Path "OU=Groups,OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name SecurityGroups -Path "OU=Groups,OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name Employees -Path "OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name CreditSupport -Path "OU=Employees,OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name RiskManagement -Path "OU=Employees,OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name Treasury -Path "OU=Employees,OU={{ OrganizationName }},{{ DomainDN }}"
+New-ADOrganizationalUnit -Name HumanResources -Path "OU=Employees,OU={{ OrganizationName }},{{ DomainDN }}"
+}
+$org3=Get-ADOrganizationalUnit -Identity "OU=Sentia,{{ DomainDN }}"
+if (-Not $org3){
+New-ADOrganizationalUnit -Name Sentia -Path "{{ DomainDN }}"
+New-ADOrganizationalUnit -Name AdminAccounts -Path "OU=Sentia,{{ DomainDN }}"
+New-ADOrganizationalUnit -Name ServiceAccounts -Path "OU=Sentia,{{ DomainDN }}"
+New-ADOrganizationalUnit -Name ThirdPartyAccounts -Path "OU=Sentia,{{ DomainDN }}"
+New-ADOrganizationalUnit -Name Groups -Path "OU=Sentia,{{ DomainDN }}"
+}

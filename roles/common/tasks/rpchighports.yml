@@ -1,0 +1,11 @@
+---
+# tasks file for common-win
+# Set RPC High Ports
+#
+
+- name: Set TCP ports
+  raw: 'netsh int ipv4 set dynamicport tcp start=5000 num=1000'
+
+- name: Set UDP ports
+  raw: 'netsh int ipv4 set dynamicport udp start=5000 num=1000'
+

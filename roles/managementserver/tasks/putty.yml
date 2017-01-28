@@ -1,0 +1,34 @@
+---
+- name: create temp dir
+  win_file: path='C:\\tmp' state=directory
+
+- name: test stat module on Putty zip file
+  win_stat: path='C:\\tmp\\putty.zip'
+  register: stat_zip_file
+
+- name: test stat module on putty dir
+  win_stat: path='C:\\Utils\\putty\\putty.exe'
+  register: stat_putty_file
+
+- name: download putty
+  win_get_url:
+    url: 'https://the.earth.li/~sgtatham/putty/latest/x86/putty.zip'
+    dest: 'C:\\tmp\\putty.zip'
+  when:
+    - not stat_zip_file.stat.exists
+    - not stat_putty_file.stat.exists
+
+- name: install putty
+  win_unzip:
+    src: C:\\tmp\\putty.zip
+    dest: C:\\Utils\\putty
+  when: not stat_putty_file.stat.exists
+
+- name: get actual PATH
+  raw: $ENV:PATH
+  register: path_out
+- debug: msg="{{ path_out }}"
+
+- name: set path
+  raw: 'setx /M PATH "$ENV:PATH;C:\Utils\putty"'
+  when: not stat_putty_file.stat.exists

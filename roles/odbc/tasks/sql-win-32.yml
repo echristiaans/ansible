@@ -1,0 +1,47 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source zip file
+  win_stat: path='C:\\tmp\\msodbcsql_x86.msi'
+  register: stat_msi_file
+
+- name: download source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/odbc/msodbcsql_x86.msi'
+    dest: 'C:\\tmp\\msodbcsql_x86.msi'
+  when: not stat_msi_file.stat.exists
+  tags: copy
+
+- name: test stat module on 32-bit driver dir on 64-bit system
+  win_stat: path='C:\Windows\SysWOW64\msodbcsql13.dll'
+  register: stat_sqlodbc_64_file
+  when: "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"
+
+- name: test stat module on driver dir
+  win_stat: path='C:\Windows\System32\msodbcsql13.dll'
+  register: stat_sqlodbc_32_file
+
+- name: install 32-bit source on a 64-bit system
+  raw: 'msiexec /quiet /passive /qn /i c:\tmp\msodbcsql_x86.msi IACCEPTMSODBCSQLLICENSETERMS=YES'
+  when:
+    - not stat_sqlodbc_64_file.stat.exists
+    - install_32bit
+    - "ansible_architecture == '64-bit' or ansible_architecture == 'x86_64'"
+  tags: install
+
+- name: install 32-bit source
+  raw: 'msiexec /quiet /passive /qn /i c:\tmp\msodbcsql_x86.msi IACCEPTMSODBCSQLLICENSETERMS=YES'
+  when:
+    - not stat_sqlodbc_32_file.stat.exists
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\msodbcsql_x86.msi'
+    state: absent
+  when: stat_msi_file.stat.exists
+  tags: cleanup

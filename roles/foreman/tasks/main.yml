@@ -1,0 +1,23 @@
+---
+- name: Foreman prerequisites | install Puppet
+  yum: name=https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm state=present
+  become: yes
+  tags: prerequisites
+
+- name: Foreman prerequisites | install EPEL
+  yum: name=epel-release state=present
+  become: yes
+  tags: prerequisites
+
+- name: Foreman prerequisites | install Foreman Installer
+  yum: name=https://yum.theforeman.org/releases/1.13/el7/x86_64/foreman-release.rpm state=present
+  become: yes
+  tags: prerequisites
+
+- name: Foreman installer | install the installer
+  yum: name=formeman-installer state=present
+  become: yes
+  tags: install
+
+- name: Foreman installer | run the installer
+  command: foreman-installer --enable-foreman --enable-foreman-cli --enable-foreman-compute-vmware --enable-foreman-plugin-ansible --enable-foreman-plugin-bootdisk --enable-foreman-plugin-cockpit --enable-foreman-plugin-hooks --enable-foreman-plugin-setup --enable-foreman-plugin-tasks --enable-foreman-plugin-templates

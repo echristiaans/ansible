@@ -1,0 +1,56 @@
+---
+
+#  name: Set Environmental Variable APP-DB
+#  raw: '[Environment]::SetEnvironmentVariable("DIVROLE", "APP-DB", "Machine")'
+
+- name: Check for tmp directory
+  win_stat: path=D:\\tmp
+  register: tmp_info
+
+- name: Make Temp directory
+  win_file: path=D:\\tmp state=directory
+  when: tmp_info.stat.exists==false
+
+- set_fact:
+    domain: "test.atbank.nl"
+
+- name: Add SQL Agent account
+  raw: 'net localgroup administrators {{ domain }}\{{ sa_sqlagent_test }} /add'
+  run_once: true
+
+- name: Change SQL configuration file
+  win_template: src=templates/ConfigurationFile.ini.j2 dest=D:/tmp/ConfigurationFile.ini force=yes
+
+- name: Install SQL instance using ConfigurationFile
+  raw: 'Z:\setup.exe /ConfigurationFile=D:\tmp\ConfigurationFile.INI'
+#  raw: D:\Scripts\Install-SQL2014.bat
+
+- name: Change SQL Powershell file
+  win_template: src=templates/Set-ServiceAcctCreds.ps1.j2 dest=D:/tmp/Set-ServiceAcctCreds.ps1 force=yes
+  tags:
+    - configdb
+
+- name: Change SQL Server service logon account
+  raw: D:\tmp\Set-ServiceAcctCreds.ps1 -Computer localhost -Service 'MSSQL${{ stage | upper }}_{{ client | truncate(3, True,"") }}' -Username {{ ansible_env.USERDOMAIN }}\{{ sa_sqlserver_test }} -Password {{ sa_sqlserver_test_pwd }}
+  tags:
+    - configdb
+
+- name: Change SQL Server Agent service logon account
+  raw: D:\tmp\Set-ServiceAcctCreds.ps1 -Computer localhost -Service 'SQLAgent${{ stage | upper }}_{{ client | truncate(3, True,"") }}' -Username {{ ansible_env.USERDOMAIN }}\{{ sa_sqlagent_test }} -Password {{ sa_sqlagent_test_pwd }}
+  tags:
+    - configdb
+
+- name: Change SQL Server Analysis Services service logon account
+  raw: D:\tmp\Set-ServiceAcctCreds.ps1 -Computer localhost -Service 'MSOLAP${{ stage | upper }}_{{ client | truncate(3, True,"") }}' -Username {{ ansible_env.USERDOMAIN }}\{{ sa_sqlserver_test }} -Password {{ sa_sqlserver_test_pwd }}
+  tags:
+    - configdb
+
+- name: Change SQL Server Integration Services service logon account
+  raw: D:\tmp\Set-ServiceAcctCreds.ps1 -Computer localhost -Service 'MsDtsServer110' -Username {{ ansible_env.USERDOMAIN }}\{{ sa_sqlserver_test }} -Password {{ sa_sqlserver_test_pwd }}
+  tags:
+    - configdb
+
+- name: Change SQL Server Reporting Services logon account
+  raw: D:\tmp\Set-ServiceAcctCreds.ps1 -Computer localhost -Service 'ReportServer${{ stage | upper }}_{{ client | truncate(3, True,"") }}' -Username {{ ansible_env.USERDOMAIN }}\{{ sa_sqlserver_test }} -Password {{ sa_sqlserver_test_pwd }}
+  tags:
+    - configdb

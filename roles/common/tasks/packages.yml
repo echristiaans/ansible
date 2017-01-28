@@ -1,0 +1,16 @@
+---
+- name: packages.yml | ensure unwanted packages are removed
+  yum:
+    name: "{{ item }}"
+    state: removed
+  with_items: "{{ packages_absent }}"
+  tags:
+    - packages
+
+- name: packages.yml | ensure baseline packages are installed
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ packages_present }}"
+  tags:
+    - packages

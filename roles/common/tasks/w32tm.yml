@@ -1,0 +1,7 @@
+---
+
+- name: Disable w32time Time Service
+  win_service:
+    name: w32time
+    start_mode: disabled
+    state: stopped

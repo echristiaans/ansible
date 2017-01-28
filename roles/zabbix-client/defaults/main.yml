@@ -1,0 +1,42 @@
+---
+zabix_server_ip: 10.128.99.11
+zabix_server_hostname: "atb-mon-m01.atbank.nl"
+
+zabbix_proxies:
+  globalswitch: # location name in SIS
+    name: "atb-mon-m02"
+    ip: 10.128.99.13
+    group: "Global Switch" # group in Zabbix that it will add the host to
+  "equinix-am6":
+    name: ""
+    ip: ""
+    group: "AM6"
+
+zabbix_agent_enable_remote: true
+zabbix_agent_enable_complex_chars: true
+
+zabbix_agent_sudo_cmds:
+ - "/usr/sbin/birdc"
+ - "/usr/sbin/birdc6"
+ - "/usr/sbin/birdc show ospf neighbors"
+ - "/usr/sbin/birdc6 show ospd neighbors"
+ - "/usr/sbin/birdc show ospf state"
+ - "/usr/sbin/birdc6 show ospf state"
+ - "/usr/bin/yum history"
+ - "/usr/bin/yum history -e 0"
+ - "/usr/bin/yum check-update --quiet"
+ - "/usr/bin/pdns_control"
+
+zabbix_import:
+  url: "http://monitor.atbank.nl"
+  username: "{{ lookup('enigma','11263','username') }}"
+  password: "{{ lookup('enigma','11263','password') }}"
+
+add_monitoring: false
+
+zabbix_default_groups:
+  - "Ansible Added Hosts"
+zabbix_groups: [] # Place holder
+
+zabbix_default_templates:
+  - "Template ICMP Ping"

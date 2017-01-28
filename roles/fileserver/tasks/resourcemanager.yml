@@ -1,0 +1,12 @@
+---
+- name: install Resource Manager feature
+  win_feature:
+    name: "FS-Resource-Manager"
+    state: present
+  tags: resourcemanager
+
+- name: install Resource Manager tools
+  win_feature:
+    name: "RSAT-FSRM-Mgmt"
+    state: present
+  tags: resourcemanager

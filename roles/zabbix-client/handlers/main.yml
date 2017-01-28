@@ -1,0 +1,7 @@
+---
+- name: restart zabbix agent
+  service: name=zabbix-agent state=restarted
+  become: yes
+
+- name: restart zabbixwin service
+  win_service: name="zabbix agent" state=restarted

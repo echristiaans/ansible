@@ -1,0 +1,30 @@
+---
+- name: create temp dir
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+ tags: createdir
+
+- name: Download DC install script
+  win_template:
+    src: additionalDCs.ps1.j2
+    dest: 'C:\\tmp\\additionalDCs.ps1'
+  when: not is_FirstDC
+  tags: copy
+
+- name: install Domain Controller Role from script
+  raw: powershell -File 'C:\\tmp\\additionalDCs.ps1'
+  tags: install
+
+- name: test stat module on scripts
+  win_stat:
+    path: 'C:\\tmp\\additionalDCs.ps1'
+  register: stat_additionaldc_script
+  tags: cleanup
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\additionalDCs.ps1'
+    state: absent
+  when: stat_additionaldc_script.stat.exists
+  tags: cleanup

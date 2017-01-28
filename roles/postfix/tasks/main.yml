@@ -1,2 +1,57 @@
 ---
-- include: postfix.yml
+- name: Ensure postfix is installed
+  yum: name=postfix state=present
+  when: ansible_os_family == 'RedHat'
+
+- name: Ensure postfix is started and enabled at boot.
+  service: name=postfix state=started enabled=yes
+
+- name: copy transport file
+  copy:
+    src: transport
+    dest: /etc/postfix/transport
+    mode: 0644
+    owner: root
+    group: root
+  notify:
+    - restart postfix
+
+- name: copy aliases file
+  copy:
+    src: aliases
+    dest: /etc/postfix/aliases
+    mode: 0644
+    owner: root
+    group: root
+  notify:
+    - restart postfix
+
+- name: copy mynetworks file
+  copy:
+    src: mynetworks
+    dest: /etc/postfix/mynetworks
+    mode: 0644
+    owner: root
+    group: root
+  notify:
+    - restart postfix
+
+- name: Configure main.cf
+  template:
+    src: main.cf.j2
+    dest: /etc/postfix/main.cf
+    mode: 0644
+    owner: root
+    group: root
+  notify:
+    - restart postfix
+
+- name: Configure aliases
+  template:
+    src: aliases.j2
+    dest: /etc/aliases
+    mode: 0644
+    owner: root
+    group: root
+  notify:
+    - newalias

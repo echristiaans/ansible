@@ -1,0 +1,38 @@
+---
+  - name: Create admin group
+    group: name="{{ auth_admin_groupname }}" state=present
+    become: yes
+
+  - name: Add admin group to sudoers
+    lineinfile: dest=/etc/sudoers state=present regexp='^%{{ auth_admin_groupname }} ALL\=' line='%{{ auth_admin_groupname }} ALL=(ALL) ALL' validate='visudo -cf %s'
+    become: yes
+
+  - name: Create users
+    user: name="{{ item.username }}" state=present groups="{{ auth_admin_groupname }}" append=yes password="{{ item.linux_pw_hash }}"
+    with_flattened:
+      - "{{ auth_allow_always }}"
+      - "{{ auth_allow_teams }}"
+      - "{{ auth_allow_users }}"
+    become: yes
+
+  - name: Add user public SSH key
+    authorized_key: user="{{ item.username }}" key="{{item.ssh_key_rsa}}"
+    with_flattened:
+      - "{{ auth_allow_always }}"
+      - "{{ auth_allow_teams }}"
+      - "{{ auth_allow_users }}"
+    become: yes
+    no_log: true
+
+  - name: Delete unauthorized users (from users.yml)
+    user: name="{{ item.username }}" state=absent remove=yes force=yes groups=
+    with_flattened:
+      - "{{ auth_delete_teams }}"
+      - "{{ auth_delete_users }}"
+    become: yes
+
+  - name: Delete unauthorized users (by username)
+    user: name="{{ item }}" state=absent remove=yes force=yes groups=
+    with_items:
+      - "{{ auth_delete_extra_users }}"
+    become: yes

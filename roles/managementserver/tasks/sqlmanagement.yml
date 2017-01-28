@@ -1,0 +1,34 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source zip file
+  win_stat: path='C:\\tmp\\SSMS-Setup-ENU.exe'
+  register: stat_exe_file
+
+- name: test stat module on SQL dir
+  win_stat: path='C:\Program Files (x86)\Microsoft SQL Server\130\Tools\Binn\DTA.exe'
+  register: stat_dta_file
+
+- name: download source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/sql/SSMS-Setup-ENU.exe'
+    dest: 'C:\\tmp\\SSMS-Setup-ENU.exe'
+  when:
+    - not stat_exe_file.stat.exists
+    - not stat_dta_file.stat.exists
+
+- name: install SQL Management Studio
+  raw: 'C:\tmp\SSMS-Setup-ENU.exe /install /quiet /norestart'
+  when:
+    - not stat_dta_file.stat.exists
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\SSMS-Setup-ENU.exe'
+    state: absent
+  when: stat_exe_file.stat.exists
+  tags: cleanup

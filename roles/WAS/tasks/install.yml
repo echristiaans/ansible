@@ -1,0 +1,187 @@
+---
+- name: test stat module on InstallationManager source zip file
+  stat: path='/opt/tmp/agent.installer.linux.gtk.x86_64_1.8.6000.20161118_1611.zip'
+  register: stat_zip_file
+
+- name: test stat module on Installation Manager dir
+  stat: path='/opt/IBM/InstallationManager/eclipse/tools/imcl'
+  register: stat_im_file
+
+- name: Create directories
+  file: path="{{ item }}" state=directory
+  with_items:
+    - /opt/tmp
+    - /opt/IBM/software/was
+    - /opt/software/was/im
+    - /opt/IBM/software/was/sdk7.1
+    - /opt/IBM/software/was/fixpack9
+    - /opt/IBM/software/was/was8.5.5
+
+- name: download InstallationManager source
+  get_url:
+    url: 'http://repo.atbank.nl/artifacts/was/im/agent.installer.linux.gtk.x86_64_1.8.6000.20161118_1611.zip'
+    dest: '/opt/tmp/agent.installer.linux.gtk.x86_64_1.8.6000.20161118_1611.zip'
+  when:
+    - not stat_zip_file.stat.exists
+    - not stat_im_file.stat.exists
+
+- name: unzip InstallationManager source
+  unarchive:
+    src: '/opt/tmp/agent.installer.linux.gtk.x86_64_1.8.6000.20161118_1611.zip'
+    dest: /opt/software/was/im
+    copy: no
+  when: not stat_im_file.stat.exists
+
+- name: install IBM Installation Manager
+  raw: '/opt/software/was/im/installc -silent -acceptLicense'
+  tags: installim
+
+- name: test stat module on WAS source zip file
+  stat: path='/opt/tmp/WAS.zip'
+  register: stat_waszip_file
+
+- name: test stat module on WAS dir
+  stat: path='/opt/IBM/WebSphere/AppServer/V85/bin/startManager.sh'
+  register: stat_was_file
+
+- name: download WAS source
+  get_url:
+    url: 'http://repo.atbank.nl/artifacts/was/8.5.5/WAS.zip'
+    dest: '/opt/tmp/WAS.zip'
+  when:
+    - not stat_waszip_file.stat.exists
+    - not stat_was_file.stat.exists
+
+- name: unzip WAS source
+  unarchive:
+    src: /opt/tmp/WAS.zip
+    dest: /opt/IBM/software/was/was8.5.5
+    copy: no
+  when: not stat_was_file.stat.exists
+
+- name: install WAS 8.5.5
+  raw: '/opt/IBM/InstallationManager/eclipse/tools/imcl install "com.ibm.websphere.ND.v85_8.5.5000.20130514_1044" -repositories /opt/IBM/software/was/was8.5.5/ -installationDirectory /opt/IBM/WebSphere/AppServer/V85 -sharedResourcesDirectory /opt/IBM/InstallationManager/IMShared -acceptLicense'
+  when: not stat_was_file.stat.exists
+  tags: installwas
+
+- name: determine WAS version
+  raw: '/opt/IBM/WebSphere/AppServer/V85/bin/versionInfo.sh | grep "IBM WebSphere Application Server" -a1 | grep Version | awk ''{print $2}'''
+  register: wasversion
+
+- name: test stat module on source FP9 zip 1 file
+  stat: path='/opt/tmp/8.5.5-WS-WAS-FP0000009-part1.zip'
+  register: stat_fp9zip1_file
+
+- name: test stat module on source FP9 zip 2 file
+  stat: path='/opt/tmp/8.5.5-WS-WAS-FP0000009-part2.zip'
+  register: stat_fp9zip2_file
+
+- name: test stat module on unpacked fp9 source
+  stat: path='/opt/IBM/software/was/fixpack9/repository.config'
+  register: stat_fp9_dir
+
+- name: download FP9 zip 1 source
+  get_url:
+    url: 'http://repo.atbank.nl/artifacts/was/8.5.5/8.5.5-WS-WAS-FP0000009-part1.zip'
+    dest: '/opt/tmp/8.5.5-WS-WAS-FP0000009-part1.zip'
+  when:
+    - not stat_fp9zip1_file.stat.exists
+    - not stat_fp9_dir.stat.exists
+    - "not '8.5.5.9' in wasversion.stdout"
+
+- name: download FP9 zip 2 source
+  get_url:
+    url: 'http://repo.atbank.nl/artifacts/was/8.5.5/8.5.5-WS-WAS-FP0000009-part2.zip'
+    dest: '/opt/tmp/8.5.5-WS-WAS-FP0000009-part2.zip'
+  when:
+    - not stat_fp9zip2_file.stat.exists
+    - not stat_fp9_dir.stat.exists
+    - "not '8.5.5.9' in wasversion.stdout"
+
+- name: unzip FP9 zip 1 source
+  unarchive:
+    src: /opt/tmp/8.5.5-WS-WAS-FP0000009-part1.zip
+    dest: /opt/IBM/software/was/fixpack9
+    copy: no
+  when:
+    - not stat_fp9_dir.stat.exists
+    - "not '8.5.5.9' in wasversion.stdout"
+
+- name: unzip FP9 zip 2 source
+  unarchive:
+    src: /opt/tmp/8.5.5-WS-WAS-FP0000009-part2.zip
+    dest: /opt/IBM/software/was/fixpack9
+    copy: no
+  when:
+    - not stat_fp9_dir.stat.exists
+    - "not '8.5.5.9' in wasversion.stdout"
+
+- name: install WAS 8.5.5 FeaturePack 9
+  raw: '/opt/IBM/InstallationManager/eclipse/tools/imcl install "com.ibm.websphere.ND.v85_8.5.5009.20160225_0435" -repositories /opt/IBM/software/was/fixpack9/ -acceptLicense'
+  tags: installfp9
+  when:
+    - "not '8.5.5.9' in wasversion.stdout"
+
+- name: test stat module on SDK source zip file
+  stat: path='/opt/tmp/7.1.3.30-WS-IBMWASJAVA-Linux.zip'
+  register: stat_sdkzip_file
+
+- name: test stat module on SDK dir
+  stat: path='/opt/IBM/WebSphere/AppServer/V85/java_1.7.1_64/bin/java'
+  register: stat_sdk_file
+
+- name: download SDK source
+  get_url:
+    url: 'http://repo.atbank.nl/artifacts/was/sdk/7.1.3.30-WS-IBMWASJAVA-Linux.zip'
+    dest: '/opt/tmp/7.1.3.30-WS-IBMWASJAVA-Linux.zip'
+  when:
+    - not stat_sdkzip_file.stat.exists
+    - not stat_sdk_file.stat.exists
+
+- name: unzip SDK source
+  unarchive:
+    src: /opt/tmp/7.1.3.30-WS-IBMWASJAVA-Linux.zip
+    dest: /opt/IBM/software/was/sdk7.1
+    copy: no
+  when: not stat_sdk_file.stat.exists
+
+- name: install SDK 7.1.3.30
+  raw: '/opt/IBM/InstallationManager/eclipse/tools/imcl install "com.ibm.websphere.IBMJAVA.v71_7.1.3030.20160224_1952" -repositories /opt/IBM/software/was/sdk7.1/ -installationDirectory /opt/IBM/WebSphere/AppServer/V85  -sharedResourcesDirectory /opt/IBM/InstallationManager/IMShared -acceptLicense'
+  when: not stat_sdk_file.stat.exists
+  tags: installsdk
+
+- name: Check for existing profiles
+  raw: '/opt/IBM/WebSphere/AppServer/V85/bin/manageprofiles.sh -listProfiles'
+  register: existingprofiles
+  tags: profiles
+
+- name: create the deployment manager profile
+  raw: '/opt/IBM/WebSphere/AppServer/V85/bin/manageprofiles.sh -create -templatePath /opt/IBM/WebSphere/AppServer/V85/profileTemplates/dmgr/ -isDefault -profileName dmgr -adminUserName wasadmin -adminPassword "{{ adminpassword }}"'
+  when:
+    - "not 'dmgr' in existingprofiles.stdout"
+  tags: profiles
+
+- name: enable SDK 7.1
+  raw: '/opt/IBM/WebSphere/AppServer/V85/bin/managesdk.sh -enableProfile -sdkname "1.7.1_64" -profileName dmgr'
+  tags: sdk
+
+- name: create the node
+  raw: '/opt/IBM/WebSphere/AppServer/V85/bin/manageprofiles.sh -create -templatePath /opt/IBM/WebSphere/AppServer/V85/profileTemplates/managed/ -profileName node'
+  when:
+    - "not 'node' in existingprofiles.stdout"
+  tags: profiles
+
+- name: add the node
+  raw: '/opt/IBM/WebSphere/AppServer/V85/bin/addNode.sh localhost 8879'
+  tags: node
+
+- name: cleanup files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - '/opt/tmp/agent.installer.linux.gtk.x86_64_1.8.6000.20161118_1611.zip'
+    - /opt/tmp/8.5.5-WS-WAS-FP0000009-part1.zip
+    - /opt/tmp/8.5.5-WS-WAS-FP0000009-part2.zip
+    - /opt/tmp/7.1.3.30-WS-IBMWASJAVA-Linux.zip
+  tags: cleanup

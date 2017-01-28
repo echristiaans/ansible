@@ -1,0 +1,22 @@
+---
+- name: install all packages that WAS needs
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libXp
+    - libXmu
+    - libXtst
+    - libXft
+    - gtk2
+    - xorg-x11-fonts-Type1
+    - psmisc
+    - glibc.i686
+    - gtk2.i686
+    - libXtst.i686
+    - libXft.i686
+    - compat-libstdc++-33
+    - compat-libstdc++-33.i686
+
+
+#Set ulimit -c as unlimited

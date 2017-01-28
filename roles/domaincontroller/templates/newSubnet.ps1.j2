@@ -1,0 +1,28 @@
+#jinja2: newline_sequence:'\r\n'
+$SiteName = "{{ ADSiteName }}"
+$newSubnetName = "{{ Prefix }}"
+
+
+# $subnetIPAddressStr,$prefixLengthStr = $newSubnetName.Split("/”)
+# $subnetIPAddress = [System.Net.IPAddress]::Parse($subnetIPAddressStr)
+# $specifiedPrefixLength = [int]::Parse($prefixLengthStr)
+# $ipAddressPrefixLength = GetIPAddressPrefixLength $subnetIPAddress
+# $subnetIPAddress = [System.Net.IPAddress]::Parse($newSubnetName)
+# $prefixLength = GetIPAddressPrefixLength $subnetIPAddress
+# $newSubnetName = $newSubnetName + "/” + $prefixLength
+
+  # Get the configuration partition DN, the sites container and build the new site DN
+  $configNCDN = (Get-ADRootDSE).ConfigurationNamingContext
+  $subnetContainerDN = ("CN=Subnets,CN=Sites,” + $configNCDN)
+  $newSubnetDN = ("CN=” + $newSubnetName +",” + $subnetContainerDN)
+  $sitesContainerDN = ("CN=Sites," + $configNCDN)
+  $SiteDN = ("CN=" + $SiteName +"," + $sitesContainerDN)
+
+  # Verify if the subnet already exists
+  $subnetExists = Get-ADObject -Identity $newSubnetDN
+  # Create subnet object
+  New-ADObject -Name $newSubnetName -Path $subnetContainerDN -Type subnet -Description '{{ subnetDescription }}' -OtherAttributes @{location="{{ subnetLocation }}"}
+  # Fetch the subnet object
+  Get-ADObject $newSubnetDN -properties "siteObject”, "description”, "location”
+  }
+  }

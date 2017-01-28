@@ -1,0 +1,14 @@
+---
+- name: install RDP License Feature
+  win_feature:
+    name: "RDS-Licensing"
+    state: present
+  when: ansible_os_family == "Windows"
+  tags: features
+
+- name: install RDP License Tool
+  win_feature:
+    name: "RDS-Licensing-UI"
+    state: present
+  when: ansible_os_family == "Windows"
+  tags: features

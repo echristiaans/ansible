@@ -1,0 +1,56 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source zip file
+  win_stat: path='C:\\tmp\\licensing.zip'
+  register: stat_zip_file
+
+
+- name: test stat module on licensing dir
+  win_stat: path='C:\Program Files (x86)\Citrix\Licensing\LS\CITRIX.exe'
+  register: stat_licensing_file
+
+- name: download source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/citrix/xd_7.12/x64/licensing.zip'
+    dest: 'C:\\tmp\\licensing.zip'
+  when:
+    - not stat_zip_file.stat.exists
+    - not stat_licensing_file.exists
+
+
+- name: unzip source
+  win_unzip:
+    src: C:\\tmp\\licensing.zip
+    dest: C:\\tmp
+  when: not stat_licensing_file.stat.exists
+
+- name: install Citrix licensing server
+  raw: 'msiexec /I C:\tmp\Licensing\ctx_licensing.msi /l*v C:\tmp\citrix_license_server_install.log /qn CEIPOPTIN=NONE'
+  when: not stat_licensing_file.stat.exists
+
+- name: copy license Files
+  win_copy:
+    src: FID_2c9a9c4e_1594760b03e__5ac3.lic
+    dest: 'C:\Program Files (x86)\Citrix\Licensing\MyFiles\FID_2c9a9c4e_1594760b03e__5ac3.lic'
+  when: copy_license
+  notify: restart licenseserver
+  tags: licenses
+
+- name: Disable domain name truncation
+  win_regedit:
+    key: HKLM:\Software\Wow6432Node\citrix\licenseserver
+    value: UDUseDomain
+    data: "1"
+    state: present
+
+- name: clean up files
+  win_file:
+    path: 'C:\\tmp\licensing.zip'
+    state: absent
+  when: stat_zip_file.stat.exists
+  tags: cleanup

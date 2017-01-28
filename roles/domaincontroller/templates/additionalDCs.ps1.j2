@@ -1,0 +1,7 @@
+#jinja2: newline_sequence:'\r\n'
+Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools
+
+$secpasswd = ConvertTo-SecureString {{ DomainAdminPassword }} -AsPlainText -Force
+$creds = New-Object System.Management.Automation.PSCredential ({{ DomainAdminUser }}, $secpasswd)
+
+Install-ADDSDomainController -NoGlobalCatalog:$false -Credential $creds -CriticalReplication:$false -DatabasePath {{ DatabasePath }} -LogPath {{ LogPath }} -DomainName {{ DomainName }} -InstallDNS:$true -SiteName {{ ADSiteName }} -SYSVOLPath {{ SysvolPath }} -Force:$true -SafeModeAdministratorPassword (convertto-securestring {{ SafeModeAdministratorPasswordText }} -asplaintext -force)

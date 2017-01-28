@@ -1,0 +1,32 @@
+---
+  - name: Create users
+    user: name="{{ item.username }}" state=present groups="{{ auth_bsd_admin_groupname }}" append=yes password="{{ item.bsd_pw_hash }}"
+    when: (item.bsd_pw_hash is defined)
+    with_flattened:
+      - "{{ auth_allow_always }}"
+      - "{{ auth_allow_teams }}"
+      - "{{ auth_allow_users }}"
+    become: yes
+
+  - name: Add user public SSH key
+    authorized_key: user="{{ item.username }}" key="{{item.ssh_key_rsa}}"
+    when: (item.bsd_pw_hash is defined)
+    with_flattened:
+      - "{{ auth_allow_always }}"
+      - "{{ auth_allow_teams }}"
+      - "{{ auth_allow_users }}"
+    become: yes
+    no_log: true
+
+  - name: Delete unauthorized users (from users.yml)
+    user: name="{{ item.username }}" state=absent remove=yes force=yes groups=
+    with_flattened:
+      - "{{ auth_delete_teams }}"
+      - "{{ auth_delete_users }}"
+    become: yes
+
+  - name: Delete unauthorized users (by username)
+    user: name="{{ item }}" state=absent remove=yes force=yes groups=
+    with_items:
+      - "{{ auth_delete_extra_users }}"
+    become: yes

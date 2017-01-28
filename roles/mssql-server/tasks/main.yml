@@ -1,0 +1,9 @@
+---
+# tasks file for DIV-Install
+- include: DIVNet35.yml
+  tags:
+    - net35
+
+- include: DIV-SQL-Server.yml
+  tags:
+    - db

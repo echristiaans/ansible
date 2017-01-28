@@ -1,0 +1,10 @@
+---
+- name: "Install open-vm-tools"
+  package: name={{ item.value.package_name }} state={{ item.value.package_version }}
+  tags:
+    - packages
+  with_dict: "{{ vmtools.packages }}"
+
+- name: "Ensure open-vm-tools is enabled and running"
+  service: name={{ item.value.service_name }} state={{ item.value.service_state }} enabled={{ item.value.enabled }}
+  with_dict: "{{ vmtools.service }}"

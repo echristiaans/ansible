@@ -1,0 +1,14 @@
+---
+- name: Set legal notice capton (Windows)
+  win_regedit:
+    key: HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system
+    value: legalnoticecaption
+    data: "*** Warning ***"
+    state: present
+    
+- name: Set legal notice message (Windows)
+  win_regedit:
+    key: HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system
+    value: legalnoticetext
+    data: "** This system is property of Sentia BV, Internet Security **\nAccess without authorization to this system is strictly\nforbidden. All activity on and/or through this system\nmay be monitored. In case of criminal activity, logs\nwill be provided to law-enforcement officials."
+    state: present

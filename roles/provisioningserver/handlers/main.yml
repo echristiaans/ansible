@@ -1,0 +1,3 @@
+---
+- name: restart licenseserver
+  raw: '"C:\Program Files (x86)\Citrix\Licensing\LS\lmreread.exe" -c @localhost -all'

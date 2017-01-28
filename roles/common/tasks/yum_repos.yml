@@ -1,0 +1,63 @@
+---
+- name: Get yum repo cfg files
+  find: path=/etc/yum.repos.d/
+  register: get_yum_repo_files
+  always_run: yes
+
+- set_fact:
+    __yum_managed_repos: "{{ __yum_managed_repos + group_yum_managed_repos | unique }}"
+  when: group_yum_managed_repos is defined
+
+- set_fact:
+    yum_managed_repos: "{{ __yum_managed_repos + yum_managed_repos  | unique }}"
+  when: yum_managed_repos is defined
+
+- set_fact:
+    yum_managed_repos: "{{ __yum_managed_repos }}"
+  when: yum_managed_repos is undefined or yum_managed_repos == 'NONE'
+
+- set_fact:
+    yum_repo_files_present: "{{ get_yum_repo_files.files | map(attribute='path')  | list }}"
+
+- set_fact:
+    yum_repo_names_present: "{{ yum_repo_files_present | map('basename') | list | map('regex_replace', '.repo', '') | list }}"
+
+- set_fact:
+    yum_repos_configured: "{{ yum_managed_repos + yum_extra_repositories.keys() | list }}"
+# Remove repo files under /etc/yum.repos.d which are not managed by ansible.
+- name: Remove unmanaged repos
+  file:
+    path: "/etc/yum.repos.d/{{ item }}.repo"
+    state: absent
+  when: >
+    item not in yum_repos_configured and yum_purge_unmanaged == True
+  with_items:
+    - "{{ yum_repo_names_present }}"
+  notify: clean_yum_cache
+
+# Manage yum repositories on Redhat 7
+- block:
+  - name: Configure yum repos for Redhat 7 (baseline repositories)
+    yum_repository:
+      name: "{{ item.key }}"
+      description: "{{ item.value.description }}"
+      file: "{{ item.key }}"
+      baseurl: "{{ item.value.baseurl }}"
+      enabled: "{{ item.value.enabled }}"
+      gpgkey: "{{ item.value.gpgkey }}"
+      gpgcheck: "{{ item.value.gpgcheck }}"
+    with_dict: "{{ yum_repositories }}"
+    when: item.key in yum_managed_repos
+    notify: clean_yum_cache
+
+  - name: Configure yum repos for CentOS 7 (extra repositories)
+    yum_repository:
+      name: "{{ item.key }}"
+      description: "{{ item.value.description }}"
+      file: "{{ item.key }}"
+      baseurl: "{{ item.value.baseurl }}"
+      enabled: "{{ item.value.enabled }}"
+      gpgkey: "{{ item.value.gpgkey }}"
+      gpgcheck: "{{ item.value.gpgcheck }}"
+    with_dict: "{{ yum_extra_repositories }}"
+    notify: clean_yum_cache

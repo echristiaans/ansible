@@ -1,0 +1,12 @@
+---
+- name: install message queing features
+  win_feature:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - MSMQ-Server
+    - MSMQ-Directory
+    - MSMQ-HTTP-Support
+    - MSMQ-Triggers
+    - MSMQ-Routing
+    - NET-WCF-MSMQ-Activation45

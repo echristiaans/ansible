@@ -1,0 +1,49 @@
+---
+- name: create temp directory
+  win_file:
+    path: 'C:\\tmp'
+    state: directory
+  tags: createdir
+
+- name: test stat module on source zip file
+  win_stat: path='C:\\tmp\\accessRT_x64.zip'
+  register: stat_zip_file
+
+- name: download source
+  win_get_url:
+    url: 'http://repo.atbank.nl/artifacts/accessrt/accessRT_x64.zip'
+    dest: 'C:\\tmp\\accessRT_x64.zip'
+  when: not stat_zip_file.stat.exists
+  tags: copy
+
+- name: install config
+  win_copy:
+    src: access_install.xml
+    dest: 'C:\\tmp\\access_install.xml'
+  tags: copy
+
+- name: test stat module on driver dir
+  win_stat: path='C:\Program Files\Microsoft Office\Office14\MSACCESS.EXE'
+  register: stat_access_file
+
+- name: unzip 64-bit source
+  win_unzip:
+    src: C:\\tmp\\accessRT_x64.zip
+    dest: C:\\tmp
+  tags: unzip
+
+- name: install 64-bit source
+  raw: 'c:\tmp\accessRT\setup.exe /config C:\tmp\access_install.xml'
+  when:
+    - not stat_access_file.stat.exists
+  tags: install
+
+- name: clean up files
+  win_file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - 'C:\\tmp\\accessRT_x64.zip'
+    - 'C:\\tmp\\accessRT'
+    - 'C:\\tmp\\access_install.xml'
+  tags: cleanup

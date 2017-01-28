@@ -1,16 +1,18 @@
 ---
 - name: config_kvm | configuring kvm
-  template: 
-    src: libvirtd.conf.j2 
-    dest: /etc/libvirt/libvirtd.conf 
-    owner: root 
-    group: root 
+  template:
+    src: libvirt.conf.j2
+    dest: /etc/libvirt/libvirtd.conf
+    owner: root
+    group: root
     mode: 0644
+  #become: true
   notify:
     - restart kvm
 
 - name: config_kvm | configuring kvm
   replace: dest=/etc/default/libvirt-bin regexp="^libvirtd_opts=\"-d\"" replace="libvirtd_opts=\"-d -l\""
+  #become: true
   notify:
     - restart kvm
   when: enable_kvm_tcp is defined and enable_kvm_tcp
