@@ -11,7 +11,7 @@
     - libvirt
     - libvirt-python
     - virt-install
-    - virt-manager
+    - libvirt-client
     - libguestfs-tools
     - bridge-utils
     - wget

@@ -19,7 +19,7 @@ kvm_virtual_networks:
     autostart: true
     state: active  #options are active, inactive, present and absent
 nfs_mounts:
-  - server: 192.168.2.200
-    export: /volumes/HD-Pool/kvm/NFS
+  - server: 10.12.10.201
+    export: /Volume1/kvm
     mount_options: hard,intr,nfsvers=3,tcp,bg,_netdev,auto,nolock
     mountpoint: /mnt/kvm
