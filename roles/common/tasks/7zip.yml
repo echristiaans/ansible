@@ -1,7 +1,4 @@
 ---
-# tasks file for common-win
-# Install an MSI file
-#
 - name: create temp dir
   win_file: path='C:\\tmp' state=directory
 
@@ -9,19 +6,11 @@
   win_stat: path='C:\\tmp\\7z1506-x64.exe'
   register: stat_msi_file
 
-
-# downloading may not be a great idea because machines may not have access do the internet
-# adding local file upload
-
-#- name: download 7zip
-#  win_get_url:
-#    url: 'http://www.7-zip.org/a/7z1506-x64.exe'
-#    dest: 'C:\tmp\7z1506-x64.exe'
-#  when: not stat_msi_file.stat.exists
-
-- name: windows | Copy zabbix client install to install folder
-  win_copy: src="files/7z1506-x64.exe" dest="C:\\tmp"
-  register: sentia_zip_copy
+- name: download 7zip
+  win_get_url:
+    url: 'https://repo.atbank.nl/artifacts/7zip/7z1506-x64.exe'
+    dest: 'C:\tmp\7z1506-x64.exe'
+    skip_certificate_validation: yes
   when: not stat_msi_file.stat.exists
 
 - name: test stat module on 7zip dir

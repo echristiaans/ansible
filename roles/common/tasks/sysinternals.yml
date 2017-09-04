@@ -13,6 +13,7 @@
   win_get_url:
     url: 'https://download.sysinternals.com/files/SysinternalsSuite.zip'
     dest: 'C:\\tmp\\Sysinternals.zip'
+    skip_certificate_validation: yes
   when: not stat_msi_file.stat.exists
 
 - name: test stat module on sysinternals dir

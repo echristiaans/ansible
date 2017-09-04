@@ -10,12 +10,12 @@ sshd_enabled: true
 motd_enabled: true
 ntp_enabled: true
 ntp_source:
-  - "ntp3.sentia.net"
-  - "ntp1.sentia.net"
-  - "ntp2.sentia.net"
+  - "0.nl.pool.ntp.org"
+  - "1.nl.pool.ntp.org"
+  - "2.nl.pool.ntp.org"
 
 time_zone: "Europe/Amsterdam"
-manage_yum: true
+manage_yum: false
 manage_packages: true
 manage_tuning: true
 manage_vmware: true
@@ -24,7 +24,6 @@ __yum_managed_repos:
   - optional
   - epelrepo
   - redhat
-
 yum_extra_repositories: {}
 # Remove unmanaged repos
 yum_purge_unmanaged: True

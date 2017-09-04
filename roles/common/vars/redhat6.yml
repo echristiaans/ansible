@@ -2,16 +2,8 @@
 yum_repositories:
   base:
     name: base
-    description: Sentia RHEL 7 - x86-64
-    baseurl: http://repo.sentia.nl/mrepo/rhel7Server-x86_64/RPMS.os
-    enabled: yes
-    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-    gpgcheck: yes
-
-  optional:
-    name: optional
-    description: Sentia RHEL 7 - x86-64
-    baseurl: http://repo.sentia.nl/mrepo/rhel7Server-x86_64/RPMS.optional
+    description: Sentia RHEL 6 - x86-64
+    baseurl: http://repo.sentia.nl/mrepo/rhel6Server-x86_64/RPMS.os
     enabled: yes
     gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
     gpgcheck: yes
@@ -19,9 +11,9 @@ yum_repositories:
   epelrepo:
     name: epelrepo
     description: Epel - x86-64
-    baseurl: http://repo.sentia.nl/mrepo/rhel7Server-x86_64/RPMS.elrepo
+    baseurl: http://repo.sentia.nl/mrepo/centos6Server-x86_64/RPMS.elrepo
     enabled: yes
-    gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+    gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
     gpgcheck: yes
 
 packages_absent:

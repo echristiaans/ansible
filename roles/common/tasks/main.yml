@@ -2,6 +2,9 @@
 - include_vars: redhat7.yml
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
 
+- include_vars: redhat6.yml
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'
+
 - name: Windows common configurations - install 7zip
   include: 7zip.yml
   when: ansible_os_family == "Windows"
@@ -30,7 +33,7 @@
 #  tags: windows
 
 - include: yum_repos.yml
-  when: manage_yum and ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7'
+  when: manage_yum and ansible_distribution == 'RedHat'
 
 - name: Set MOTD (Windows family)
   include: motd-windows.yml
@@ -52,11 +55,28 @@
   when: ntp_enabled == true and ansible_os_family == 'RedHat'
   tags: ntp
 
+- name: set proxy for yum
+  lineinfile:
+    dest: /etc/yum.conf
+    line: "proxy=http://webgateway.atbank.nl:8080"
+  when: ansible_distribution == 'CentOS'
+
+#- name: set system-wide proxy
+#  lineinfile:
+#    dest: /etc/environment
+#    line: "export http_proxy=http://webgateway.atbank.nl:8080"
+
 - include: packages.yml
-  when: manage_packages and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+  when:
+    - manage_packages and ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '6'
 
 - include: tuning.yml
-  when: manage_tuning and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+  when:
+    - manage_packages and ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '6'
 
 - include: vmware.yml
-  when: manage_vmware and ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+  when:
+    - manage_packages and ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7'

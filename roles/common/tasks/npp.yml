@@ -11,8 +11,9 @@
 
 - name: download npp
   win_get_url:
-    url: 'http://repo.atbank.nl/artifacts/npp/npp.6.8.3.Installer.exe'
-    dest: 'C:\tmp\npp.6.8.3.Installer.exe'
+    url: 'https://notepad-plus-plus.org/repository/7.x/7.5.1/npp.7.5.1.Installer.x64.exe'
+    dest: 'C:\tmp\npp.7.5.1.Installer.exe'
+    skip_certificate_validation: yes
   when: not stat_msi_file.stat.exists
 
 - name: test stat module on npp dir
@@ -20,7 +21,7 @@
   register: stat_npp_file
 
 - name: install npp
-  raw: 'C:\tmp\npp.6.8.3.Installer.exe /S'
+  raw: 'C:\tmp\npp.7.5.1.Installer.exe /S'
   when: not stat_npp_file.stat.exists
 
 #- name: context menu npp

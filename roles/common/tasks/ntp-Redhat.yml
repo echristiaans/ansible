@@ -11,6 +11,11 @@
     notify:
       - reload ntp
     become: yes
+  - name: ntp | Set NTP step-tickers
+    template: src=step-tickers.Redhat.j2 dest=/etc/ntp/step-tickers
+    notify:
+      - reload ntp
+    become: yes
   - name: ntp | Enable ntpd service
     service: name=ntpd state=running enabled=yes
     become: yes

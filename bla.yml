@@ -1,5 +1,5 @@
 ---
-  - hosts: db-mon-m01.dirtybit.io
+  - hosts: mon1
     roles:
       - role: users
     vars:

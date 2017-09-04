@@ -11,6 +11,7 @@
   yum:
     name: "{{ item }}"
     state: installed
+    update_cache: yes
   with_items: "{{ packages_present }}"
   tags:
     - packages

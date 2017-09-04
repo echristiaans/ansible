@@ -61,3 +61,31 @@
       gpgcheck: "{{ item.value.gpgcheck }}"
     with_dict: "{{ yum_extra_repositories }}"
     notify: clean_yum_cache
+  when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7'
+# Manage yum repositories on Redhat 6
+
+- block:
+  - name: Configure yum repos for CentOS 6 (baseline repositories)
+    yum_repository:
+      name: "{{ item.key }}"
+      description: "{{ item.value.description }}"
+      file: "{{ item.key }}"
+      baseurl: "{{ item.value.baseurl }}"
+      enabled: "{{ item.value.enabled }}"
+      gpgkey: "{{ item.value.gpgkey }}"
+      gpgcheck: "{{ item.value.gpgcheck }}"
+    with_dict: "{{ yum_repositories }}"
+    when: item.key in yum_managed_repos
+    notify: clean_yum_cache
+  - name: Configure yum repos for CentOS 6 (extra repositories)
+    yum_repository:
+      name: "{{ item.key }}"
+      description: "{{ item.value.description }}"
+      file: "{{ item.key }}"
+      baseurl: "{{ item.value.baseurl }}"
+      enabled: "{{ item.value.enabled }}"
+      gpgkey: "{{ item.value.gpgkey }}"
+      gpgcheck: "{{ item.value.gpgcheck }}"
+    with_dict: "{{ yum_extra_repositories }}"
+    notify: clean_yum_cache
+  when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '6'
