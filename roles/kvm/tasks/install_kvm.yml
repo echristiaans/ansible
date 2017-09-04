@@ -16,4 +16,5 @@
     - bridge-utils
     - wget
     - python-lxml
+    - net-toolsite
   #become: yes

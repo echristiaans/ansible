@@ -9,7 +9,7 @@
     config_nfs_mounts: true  #defines if NFS mountpoints should be mounted from nfs_mounts
     config_nfs_permissions: false  #defines if nfs mountpoints should have permissions set or not...this defaults to root
     kvm_virtual_networks:
-      - name: DEFAULT_VLAN4
+      - name: DEFAULT_VLAN40
         mode: bridge
         bridge_name: vmbr2
         autostart: true

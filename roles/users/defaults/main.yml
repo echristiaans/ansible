@@ -1,5 +1,5 @@
 ---
-auth_admin_groupname: "atbadmins"
+auth_admin_groupname: "ascodeadmins"
 
 auth_bsd_admin_groupname: "wheel"
 

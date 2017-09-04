@@ -1,2 +1,5 @@
 [kvm]
 kvm1 ansible_ssh_host=10.12.10.10
+
+[mon]
+mon1 ansible_ssh_host=10.14.11.11
