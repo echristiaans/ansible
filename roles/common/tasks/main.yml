@@ -55,11 +55,11 @@
   when: ntp_enabled == true and ansible_os_family == 'RedHat'
   tags: ntp
 
-- name: set proxy for yum
-  lineinfile:
-    dest: /etc/yum.conf
-    line: "proxy=http://webgateway.atbank.nl:8080"
-  when: ansible_distribution == 'CentOS'
+#- name: set proxy for yum
+#  lineinfile:
+#    dest: /etc/yum.conf
+#    line: "proxy=http://webgateway.atbank.nl:8080"
+#  when: ansible_distribution == 'CentOS'
 
 #- name: set system-wide proxy
 #  lineinfile:

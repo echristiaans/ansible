@@ -2,6 +2,8 @@
   - hosts: mon1
     roles:
       - role: users
+      - role: common
     vars:
       auth_allow_users:
         - "{{ erik_christiaans }}"
+    become: true

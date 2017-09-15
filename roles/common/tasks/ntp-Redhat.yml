@@ -17,5 +17,5 @@
       - reload ntp
     become: yes
   - name: ntp | Enable ntpd service
-    service: name=ntpd state=running enabled=yes
+    service: name=ntpd state=started enabled=yes
     become: yes

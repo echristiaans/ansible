@@ -5,6 +5,9 @@
 - name: restart ntpd
   service: name=ntpd state=restarted
   become: yes
+- name: reload ntp
+  service: name=ntpd state=restarted
+  become: yes
 - name: clean_yum_cache
   command: yum clean all
   args:
