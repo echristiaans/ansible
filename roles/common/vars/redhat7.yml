@@ -84,6 +84,7 @@ packages_present:
   - psmisc
   - unzip
   - open-vm-tools
+  - epel-release
 
 snmp:
   package_name: net-snmp

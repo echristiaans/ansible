@@ -1,0 +1,75 @@
+---
+- hosts: mon1
+  become: true
+  pre_tasks:
+    - name: make sure the documentroot(s) exist
+      file:
+        path: /var/www/html/repo.dirtybit.io
+        state: directory
+    - name: make sure the artifacts directory exist
+      file:
+        path: /var/www/html/repo.dirtybit.io/artifacts
+        state: directory
+    - name: make sure the ks directory exist
+      file:
+        path: /var/www/html/repo.dirtybit.io/ks
+        state: directory
+    - name: install required packages
+      yum:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      with_items:
+        - epel-release
+        - certbot-apache
+        - zip
+        - unzip
+
+  roles:
+    - role: users
+    - role: common
+    - role: apache-server
+
+  vars:
+    auth_allow_users:
+        - "{{ erik_christiaans }}"
+    #vars for apache-server
+    set_default_options: false
+    apache_mods_enabled:
+     - rewrite.load
+     - ssl.load
+    apache_ssl_protocol: "All -SSLv2 -SSLv3"
+    apache_ssl_cipher_suite: "AES256+EECDH:AES256+EDH"
+    apache_remove_default_vhost: true
+    apache_vhosts:
+      - servername: "repo.dirtybit.io"
+        serveralias: "db-mon-m01.dirtybit.io"
+        documentroot: "/var/www/html/repo.dirtybit.io"
+        serveradmin: "erik@dirtybit.io"
+        extra_parameters: |
+          RewriteEngine On
+          RewriteCond %{HTTPS} !=on
+          RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+          <Directory /var/www/html/repo.dirtybit.io>
+            Options +Indexes
+          </Directory>
+    apache_vhosts_ssl:
+      - servername: "repo.dirtybit.io"
+        serveralias: "'db.mon-m01.dirtybit.io'"
+        documentroot: "/var/www/html/repo.dirtybit.io"
+        serveradmin: "erik@dirtybit.io"
+        certificate_file: "/etc/letsencrypt/live/repo.dirtybit.io/cert.pem"
+        certificate_key_file: "/etc/letsencrypt/live/repo.dirtybit.io/privkey.pem"
+        certificate_chain_file: "/etc/letsencrypt/live/repo.dirtybit.io/chain.pem"
+        extra_parameters: |
+           CustomLog /var/log/httpd/repo.dirtybit.io-access.log common
+           ErrorLog /var/log/httpd/repo.dirtybit.io-error.log
+           <Directory /var/www/html/repo.dirtybit.io>
+             Options +Indexes
+           </Directory>
+  post_tasks:
+    - name: make sure selinux does not get in the way
+      raw: 'chcon -R -t httpd_sys_rw_content_t /var/www/html/repo.dirtybit.io/artifacts'
+
+    - name: restore selinux context
+      raw: 'restorecon -R -v /var/www/html/repo.dirtybit.io/artifacts'

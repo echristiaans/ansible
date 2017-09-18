@@ -1,0 +1,11 @@
+---
+- hosts: elk1
+  become: true
+
+  roles:
+    - role: users
+    - role: common
+
+  vars:
+    auth_allow_users:
+        - "{{ erik_christiaans }}"
