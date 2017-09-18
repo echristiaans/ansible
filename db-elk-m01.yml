@@ -5,7 +5,14 @@
   roles:
     - role: users
     - role: common
+    - role: elastic/elastic
 
   vars:
     auth_allow_users:
         - "{{ erik_christiaans }}"
+    elastic_version: 5.6.0
+    logstash_version: 5.6.0
+    kibana_version: 5.6.0
+    java_version: 1.8.0
+    destination: "/data"
+    cluster_name: dirtystash
