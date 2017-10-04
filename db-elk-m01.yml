@@ -5,8 +5,9 @@
   roles:
     - role: users
     - role: common
-    - role: elastic/elastic
-
+    #- role: elastic/elastic
+    #- role: elastic/kibana
+    #- role: elastic/logstash
   vars:
     auth_allow_users:
         - "{{ erik_christiaans }}"
@@ -16,3 +17,5 @@
     java_version: 1.8.0
     destination: "/data"
     cluster_name: dirtystash
+    updating_stack: "no"
+    x_pack_plugin: "no"

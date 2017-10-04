@@ -26,9 +26,10 @@
         - unzip
 
   roles:
-    - role: users
-    - role: common
-    - role: apache-server
+    #- users
+    #- common
+    #- apache-server
+    - elastic/filebeat
 
   vars:
     auth_allow_users:
@@ -67,6 +68,28 @@
            <Directory /var/www/html/repo.dirtybit.io>
              Options +Indexes
            </Directory>
+    #vars for filebeat
+    team_insertion: ASCODE
+    prospectors_service: []
+    prospectors:
+      - name: Syslog Regular
+        paths:
+          - /var/log/secure
+          - /var/log/messages
+          - /var/log/*log
+        pipeline:
+          - "Dirtybit_pipeline"
+        input_type: log
+        document_type: syslog
+      - name: Apache Regular
+        paths:
+          - /var/log/httpd/*log
+        pipeline:
+          - "Dirtybit_pipeline"
+        input_type: log
+        document_type:
+    filebeat_logstash_hosts: "elastic.dirtybit.io:5044"
+
   post_tasks:
     - name: make sure selinux does not get in the way
       raw: 'chcon -R -t httpd_sys_rw_content_t /var/www/html/repo.dirtybit.io/artifacts'
