@@ -4,3 +4,11 @@ kvm1 ansible_ssh_host=10.12.10.10
 [mon]
 mon1 ansible_ssh_host=10.14.11.11
 elk1 ansible_ssh_host=10.14.11.12
+
+[kubernetes]
+k8c1 ansible_ssh_host=10.14.2.11
+k8c2 ansible_ssh_host=10.14.2.12
+k8c3 ansible_ssh_host=10.14.2.13
+k8w1 ansible_ssh_host=10.14.2.14
+k8w2 ansible_ssh_host=10.14.2.15
+k8w3 ansible_ssh_host=10.14.2.16

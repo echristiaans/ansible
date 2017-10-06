@@ -1,0 +1,6 @@
+---
+- name: Confirm sshd_config is up to standards
+  template: src=sshd_config.Ubuntu.j2  dest=/etc/ssh/sshd_config owner=root group=root mode=0600 backup=yes
+  notify:
+    - restart sshd
+  become: yes

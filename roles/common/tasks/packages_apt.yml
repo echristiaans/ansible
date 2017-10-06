@@ -1,0 +1,17 @@
+---
+- name: packages.yml | ensure unwanted packages are removed
+  apt:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ packages_absent }}"
+  tags:
+    - packages
+
+- name: packages.yml | ensure baseline packages are installed
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items: "{{ packages_present }}"
+  tags:
+    - packages

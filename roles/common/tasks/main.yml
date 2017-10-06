@@ -5,6 +5,9 @@
 - include_vars: redhat6.yml
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6'
 
+- include_vars: ubuntu.yml
+  when: ansible_os_family == 'Debian' and ansible_distribution == 'Ubuntu'
+
 - name: Windows common configurations - install 7zip
   include: 7zip.yml
   when: ansible_os_family == "Windows"
@@ -45,14 +48,29 @@
   when: sshd_enabled == true and ansible_os_family == 'RedHat'
   tags: ssh
 
+- name: Configure OpenSSH (Debian Family)
+  include: sshd-Ubuntu.yml
+  when: sshd_enabled == true and ansible_os_family == 'Debian'
+  tags: ssh
+
 - name: Set MOTD (Redhat family)
   include: motd-Redhat.yml
   when: motd_enabled == true and ansible_os_family == 'RedHat'
   tags: motd
 
+- name: Set MOTD (Debian family)
+  include: motd-Ubuntu.yml
+  when: motd_enabled == true and ansible_os_family == 'Debian'
+  tags: motd
+
 - name: Set NTP Client (Redhat family)
   include: ntp-Redhat.yml
   when: ntp_enabled == true and ansible_os_family == 'RedHat'
+  tags: ntp
+
+- name: Set NTP Client (Debian family)
+  include: ntp-Ubuntu.yml
+  when: ntp_enabled == true and ansible_os_family == 'Debian'
   tags: ntp
 
 #- name: set proxy for yum
@@ -70,6 +88,10 @@
   when:
     - manage_packages and ansible_os_family == 'RedHat'
     - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '6'
+
+- include: packages_apt.yml
+  when:
+    - manage_packages and ansible_distribution == 'Ubuntu'
 
 - include: tuning.yml
   when:

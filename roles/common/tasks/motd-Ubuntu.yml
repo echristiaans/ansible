@@ -1,0 +1,4 @@
+---
+- name: Copy MOTD template
+  template: src=motd.Ubuntu.j2  dest=/etc/motd owner=root group=root mode=0644 backup=yes
+  become: yes
