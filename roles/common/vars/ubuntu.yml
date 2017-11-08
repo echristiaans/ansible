@@ -44,22 +44,18 @@ packages_present:
   - wget
   - curl
   - rsync
-  - mailx
   - mlocate
-  - net-snmp
   - bc
   - telnet
   - lsof
   - logwatch
   - tree
   - screen
-  - nc
   - xinetd
   - net-tools
   - psmisc
   - unzip
   - open-vm-tools
-  - epel-release
 
 snmp:
   package_name: net-snmp
