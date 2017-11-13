@@ -34,6 +34,7 @@
   vars:
     auth_allow_users:
         - "{{ erik_christiaans }}"
+        - "{{ pascal_gorel }}"
     #vars for apache-server
     set_default_options: false
     apache_mods_enabled:
