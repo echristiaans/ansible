@@ -1,11 +1,10 @@
 ---
-- hosts: kubernetes
+- hosts: db-corda-t01
   become: true
 
   roles:
-    #- role: users
-    #- role: common
-    - role: ansible-role-k8scluster
+    - role: users
+    - role: common
 
   vars:
     auth_allow_users:

@@ -26,10 +26,10 @@
         - unzip
 
   roles:
-    #- users
+    - users
     #- common
     #- apache-server
-    - elastic/filebeat
+    #- elastic/filebeat
 
   vars:
     auth_allow_users:
