@@ -3,8 +3,8 @@
   become: true
 
   roles:
-    #- role: users
-    #- role: common
+    - role: users
+    - role: common
     - role: ansible-role-k8scluster
 
   vars:
