@@ -9,22 +9,22 @@
   when: ansible_os_family == 'Debian' and ansible_distribution == 'Ubuntu'
 
 - name: Windows common configurations - install 7zip
-  include: 7zip.yml
+  include_tasks: 7zip.yml
   when: ansible_os_family == "Windows"
   tags: windows
 
 - name: Windows common configurations - install Notepad
-  include: npp.yml
+  include_tasks: npp.yml
   when: ansible_os_family == "Windows"
   tags: windows
 
 - name: Windows common configurations - install Sysinternals Suite
-  include: sysinternals.yml
+  include_tasks: sysinternals.yml
   when: ansible_os_family == "Windows"
   tags: windows
 
 - name: Windows common configurations - configure IE
-  include: ie.yml
+  include_tasks: ie.yml
   when: ansible_os_family == "Windows"
   tags: windows
 
@@ -35,41 +35,41 @@
 #  when: ansible_os_family == "Windows" and ansible_distribution_version > "6.1"
 #  tags: windows
 
-- include: yum_repos.yml
+- include_tasks: yum_repos.yml
   when: manage_yum and ansible_distribution == 'RedHat'
 
 - name: Set MOTD (Windows family)
-  include: motd-windows.yml
+  include_tasks: motd-windows.yml
   when: motd_enabled == true and ansible_os_family == 'Windows'
   tags: motd
 
 - name: Configure OpenSSH (RedHat Family)
-  include: sshd-Redhat.yml
+  include_tasks: sshd-Redhat.yml
   when: sshd_enabled == true and ansible_os_family == 'RedHat'
   tags: ssh
 
 - name: Configure OpenSSH (Debian Family)
-  include: sshd-Ubuntu.yml
+  include_tasks: sshd-Ubuntu.yml
   when: sshd_enabled == true and ansible_os_family == 'Debian'
   tags: ssh
 
 - name: Set MOTD (Redhat family)
-  include: motd-Redhat.yml
+  include_tasks: motd-Redhat.yml
   when: motd_enabled == true and ansible_os_family == 'RedHat'
   tags: motd
 
 - name: Set MOTD (Debian family)
-  include: motd-Ubuntu.yml
+  include_tasks: motd-Ubuntu.yml
   when: motd_enabled == true and ansible_os_family == 'Debian'
   tags: motd
 
 - name: Set NTP Client (Redhat family)
-  include: ntp-Redhat.yml
+  include_tasks: ntp-Redhat.yml
   when: ntp_enabled == true and ansible_os_family == 'RedHat'
   tags: ntp
 
 - name: Set NTP Client (Debian family)
-  include: ntp-Ubuntu.yml
+  include_tasks: ntp-Ubuntu.yml
   when: ntp_enabled == true and ansible_os_family == 'Debian'
   tags: ntp
 
@@ -84,21 +84,21 @@
 #    dest: /etc/environment
 #    line: "export http_proxy=http://webgateway.atbank.nl:8080"
 
-- include: packages.yml
+- include_tasks: packages.yml
   when:
     - manage_packages and ansible_os_family == 'RedHat'
     - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '6'
 
-- include: packages_apt.yml
+- include_tasks: packages_apt.yml
   when:
     - manage_packages and ansible_distribution == 'Ubuntu'
 
-- include: tuning.yml
+- include_tasks: tuning.yml
   when:
     - manage_packages and ansible_os_family == 'RedHat'
     - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '6'
 
-- include: vmware.yml
+- include_tasks: vmware.yml
   when:
     - manage_packages and ansible_os_family == 'RedHat'
     - ansible_distribution_major_version == '7'
