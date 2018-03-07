@@ -32,5 +32,5 @@ db-k8w-p03
 [chef]
 db-chef-m01 ansible_ssh_host=10.14.11.21
 
-[corda]
-db-corda-t01 ansible_ssh_host=10.14.2.20
+[nginx]
+db-lb-p01 ansible_ssh_host=10.14.0.20
