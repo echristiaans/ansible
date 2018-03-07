@@ -2,7 +2,7 @@
 - name: Get yum repo cfg files
   find: path=/etc/yum.repos.d/
   register: get_yum_repo_files
-  always_run: yes
+  check_mode: no
 
 - set_fact:
     __yum_managed_repos: "{{ __yum_managed_repos + group_yum_managed_repos | unique }}"
